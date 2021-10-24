@@ -137,21 +137,39 @@ else:
 class Game():
   def __init__(self) -> None:
     self.dashboard()
+      
+  def settings(self, screen, game_data):
+    while True:
+      self.render_text_objects(screen, game_data, "Settings")
+      screen.refresh()
 
-  def render_text_objects(self, screen, game_data):
+      event = screen.getch()
+      key_pressed = chr(event)
+
+      if key_pressed == 'p':
+        self.change_profile_name()
+      if key_pressed == 'e':
+        self.change_empire_name()
+      if key_pressed == 'b':
+        return None
+
+  def render_text_objects(self, screen, game_data, to_render):
     # Parse Save file
-      profile_name = game_data['profileName']
-      empire_name = game_data['empireName']
-      capital = game_data['capital']
-      owned_businesses = game_data['ownedBusinesses']
-      businesses = game_data['businesses']
+    screen.clear()
 
-      max_rows, max_cols = screen.getmaxyx()
-      print(max_cols, max_rows)
+    profile_name = game_data['profileName']
+    empire_name = game_data['empireName']
+    capital = game_data['capital']
+    owned_businesses = game_data['ownedBusinesses']
+    businesses = game_data['businesses']
 
-      mid_row = int(max_rows / 2)
-      mid_col = int(max_cols / 2)
+    screen.clear()
 
+    max_rows, max_cols = screen.getmaxyx()
+    mid_row = int(max_rows / 2)
+    mid_col = int(max_cols / 2)
+
+    if to_render == "dashboard":
       # Remember its y,x.
       # IDK what the curses devs were drinking that day
       # They say its because it was like that when it came out but come on now
@@ -177,7 +195,19 @@ class Game():
         screen.addstr(2,1, f"Couldn't connect to corprate network")
       
       return None
-  
+
+    if to_render == 'settings':
+      screen.addstr(1,1, "Settings")
+      screen.addstr(4,1, f"Profile Name: {profile_name}")
+      screen.addstr(4, 40, "Type p to change profile name")
+      screen.addstr(5,1, f"Empire Name: {empire_name}")
+      screen.addstr(5, 40, "Type e to change empire name")
+      
+      if connected_to_servers:
+        screen.addstr(8, 1, f"Connected to {server_address}")
+      else:
+        screen.addstr(8,1, "Not connected to servers")
+
   def dashboard(self):
     running = True
     screen = curses.initscr()
@@ -185,11 +215,18 @@ class Game():
     curses.curs_set(0)
 
     while running:
-      self.render_text_objects(screen, game_data)
+      self.render_text_objects(screen, game_data, "dashboard")
       screen.refresh()
 
       event = screen.getch()
-      screen.addstr(1,1, f"You pressed {chr(event)}")
+      key_pressed = chr(event)
+
+      if key_pressed == 'v':
+        self.view_properties()
+      if key_pressed == 'l':
+        break
+      if key_pressed == 's':
+        self.settings()
     
     curses.endwin()
     
