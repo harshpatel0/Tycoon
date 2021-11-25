@@ -116,7 +116,8 @@ def cloudsave_get(uuid, response: Response ):
     return cloudsave_response
 
 @app.put("/api/cloudsaves/{uuid}", status_code = 201)
-def cloudsave_put(uuid, data = Header(None)):
+def cloudsave_put(uuid, response: Response, data = Header(None)):
   if data == None:
-    return "BAD"
+    response.status_code = 400
+    return None
   api.put_cloudsave(uuid, data)
