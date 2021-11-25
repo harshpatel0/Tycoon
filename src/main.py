@@ -6,7 +6,6 @@ from time import sleep
 import gamedata
 import uuidhandler
 import inquirer
-import curses
 
 VERSION = 0.01
 connected_to_servers = False
@@ -40,13 +39,11 @@ def connect_to_game_server(address):
   else:
     return 'FAILED'
 
-connectivity_prompt = [
-  inquirer.List(
-  'connectivity_prompt', 
-  message="Do you want to connect to the game servers", 
-  choices=['Yes', 'No']
-  )
-]
+# connectivity_prompt = [
+#   inquirer.List("connectivity-prompt",
+#                 message="Do you want to connect to a game server",
+#                 choices=["Yes", "No"])
+# ]
 
 server_address = [
   inquirer.Text('server_address', 
