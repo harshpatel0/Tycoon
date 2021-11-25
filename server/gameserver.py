@@ -1,16 +1,5 @@
-import flask
-from flask import request, jsonify
-import csv
-
-DEVELOPMENT = True
-DEV_ADDR = False
-
-DOWNTIME = False
-
-app = flask.Flask(__name__)
-
-if DEVELOPMENT: 
-  app.config["DEBUG"] = True
+from fastapi import FastAPI, Header, Response
+import json
 
 properties = {
   "Amy's Baking Company": {
@@ -54,76 +43,80 @@ properties = {
   },
 }
 
-changelog = {
-  "Version 1": {
-    1: "Increased the prices of 'Friedlander's Office' was 16580 now 36425",
-    2: "Decreased the daily profit of 'Friedlander's Office' was 3600 now 1557"
-  }
-}
+# Server Properties
 
-version = '0.01'
+class API():
+  name = ""
+  properties = {}
+  version = 0
 
-@app.route('/', methods=['GET'])
-def home():
-  return '''
-  <DOCTYPE html>
-  <html>
-  <head>
-    <title>Business Game Server</title>
-  </head>
+  def respond(self, query):
+
+    if self.name == "" or self.properties == {} or self.version == 0:
+      return "API not initialized"
+    if query == "ping":
+      return 1
+    if query == "properties":
+      return self.properties
+    if query == "name":
+      return self.name
+    if query == "version":
+      return self.version
   
-  <body>
-    <h1>Business API</h1>
-    <p>Unlike WhatsApp, I have a fucking API</p>
-    <p><i>Multi-million dollar company can't make their API public</i></p>
-    <p>Visit API Links</p>
-      <a href="api/properties">Properties</a>
-      <a href="api/changelog">Changelog</a>
-      <a href="api/version">Version</a>
-  </body>
-  </html>
-  '''
+  def retrieve_cloudsave(self, uuid):
+    try:
+      with open(f'cloudsaves/{uuid}.sav', 'rb') as cloud_save_file:
+        cloudsave_data = cloud_save_file.read()
 
-@app.route('/api/check', methods=['GET'])
-def validate_server():
-  return 'businessapi'
-
-@app.route('/api/server/name', methods=['GET'])
-def respond_name():
-  return 'Official BusinessAPI'
-
-@app.route('/api/properties', methods=['GET'])
-def show_properties():
-  return jsonify(properties)
-
-@app.route('/api/changelog', methods=['GET'])
-def show_changelog():
-  return jsonify(changelog)
-
-@app.route('/api/version', methods=['GET'])
-def show_version():
-  return version
-
-@app.route('/api/cloudsave/', methods=['GET', 'POST'])
-def cloudsave():
-  try:
-    uuid = request.args["uuid"]
-  except Exception:
-    return 'BADRESPONSE'
-
-  print(f'{uuid} requested their cloudsave')
-
-  try:
-    with open(f'cloudsaves/{uuid}.sav', 'rb') as cloud_save_file:
-      cloudsave_data = cloud_save_file.read()
-
-    return cloudsave_data
+      return cloudsave_data
+      
+    except FileNotFoundError:
+      return 'NOTFOUND'
     
-  except FileNotFoundError:
-    print("Couldn't find save file on the server")
-    return 'NOTFOUND'
+  
+  def put_cloudsave(self, uuid, data):
+    data = data.encode('utf-8')
+    with open(f'cloudsaves/{uuid}.sav', 'wb') as cloud_save_file:
+      cloud_save_file.write(data)
+    
+app = FastAPI()
 
-if DEV_ADDR:
-  app.run()
-else:
-  app.run(host='0.0.0.0')
+api = API()
+
+# Initalize API
+
+api.name = "businessapi"
+api.properties = properties
+api.version = 0.01
+
+@app.get("/", status_code = 204)
+def root():
+  api.respond("ping")
+
+@app.get("/api/properties")
+def root():
+  return api.respond("properties")
+
+@app.get("/api/server/name")
+def root():
+  return api.respond("name")
+
+@app.get("/api/server/version")
+def root():
+  return api.respond("version",)
+
+@app.get("/api/cloudsaves/{uuid}")
+def cloudsave_get(uuid, response: Response ):
+  cloudsave_response = api.retrieve_cloudsave(uuid)
+
+  if cloudsave_response == "NOTFOUND":
+    response.status_code = 404
+  
+  else:
+    return cloudsave_response
+
+@app.put("/api/cloudsaves/{uuid}", status_code = 201)
+def cloudsave_put(uuid, data = Header(None)):
+  if data == None:
+    return "BAD"
+  api.put_cloudsave(uuid, data)
