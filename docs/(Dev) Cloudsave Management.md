@@ -7,6 +7,7 @@ The UUID must be put as a URL path e.g
 
 The API will return 200 status code as well as the encrypted data when found
 The API will return 404 status code when it is not found
+The API will return 400 status code when the client sends a bad response
 
 ### Uploading Cloudsaves
 
@@ -16,4 +17,5 @@ The UUID must be put as a URL path e.g
 And the data must be put in the header with the field name called **data**
 and the content being the **encrypted data**
 
+The API will return 400 status code when the client sends a bad response
 A 201 Status code will be sent back when it is done
