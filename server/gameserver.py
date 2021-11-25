@@ -107,17 +107,23 @@ def root():
 
 @app.get("/api/cloudsaves/{uuid}")
 def cloudsave_get(uuid, response: Response ):
+
+  if uuid == None:
+    response.status_code = 400
+    return None
+
   cloudsave_response = api.retrieve_cloudsave(uuid)
 
   if cloudsave_response == "NOTFOUND":
     response.status_code = 404
+    return None
   
   else:
     return cloudsave_response
 
 @app.put("/api/cloudsaves/{uuid}", status_code = 201)
 def cloudsave_put(uuid, response: Response, data = Header(None)):
-  if data == None:
+  if data or uuid == None:
     response.status_code = 400
     return None
   api.put_cloudsave(uuid, data)
