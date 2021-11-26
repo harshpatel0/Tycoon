@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Header, Response
 import json
+import os
 
 properties = {
   "Amy's Baking Company": {
@@ -79,6 +80,17 @@ class API():
     with open(f'cloudsaves/{uuid}.sav', 'wb') as cloud_save_file:
       cloud_save_file.write(data)
     
+  def delete_cloudsave(self, uuid):
+
+    print(f"[DEBUG] UUID: {uuid}")
+    print(f"[DEBUG] Path: {os.getcwd()}")
+
+    try:
+      os.remove(f'{os.getcwd()}/cloudsaves/{uuid}.sav')
+      return 1
+    except Exception:
+      return "NOTFOUND"
+
 app = FastAPI()
 
 api = API()
@@ -94,15 +106,15 @@ def root():
   api.respond("ping")
 
 @app.get("/api/properties")
-def root():
+def properties():
   return api.respond("properties")
 
 @app.get("/api/server/name")
-def root():
+def server_name():
   return api.respond("name")
 
 @app.get("/api/server/version")
-def root():
+def server_version():
   return api.respond("version",)
 
 
@@ -132,5 +144,18 @@ def cloudsave_put(response: Response, uuid = Header(None), data = Header(None)):
     return None
   api.put_cloudsave(uuid, data)
 
-# @app.delete("/api/cloudsaves/", status_code = 200)
-# def cloudsave_delete(uuid, response: Response, uuid = Header(None))
+@app.delete("/api/cloudsaves/", status_code = 200)
+def cloudsave_delete(response: Response, uuid = Header(None)):
+  
+  if uuid == None:
+    response.status_code = 400
+    return None
+  
+  delete_response = api.delete_cloudsave(uuid)
+
+  if delete_response == "NOTFOUND":
+    response.status_code = 404
+    return None
+  
+  else:
+    return None
