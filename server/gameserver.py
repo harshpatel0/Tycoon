@@ -105,8 +105,11 @@ def root():
 def root():
   return api.respond("version",)
 
-@app.get("/api/cloudsaves/{uuid}")
-def cloudsave_get(uuid, response: Response ):
+
+# Cloudsave Handler
+
+@app.get("/api/cloudsaves/")
+def cloudsave_get(response: Response, uuid = Header(None)):
 
   if uuid == None:
     response.status_code = 400
@@ -121,10 +124,13 @@ def cloudsave_get(uuid, response: Response ):
   else:
     return cloudsave_response
 
-@app.put("/api/cloudsaves/{uuid}", status_code = 201)
-def cloudsave_put(uuid, response: Response, data = Header(None)):
+@app.put("/api/cloudsaves/", status_code = 201)
+def cloudsave_put(response: Response, uuid = Header(None), data = Header(None)):
 
   if data == None or uuid == None:
     response.status_code = 400
     return None
   api.put_cloudsave(uuid, data)
+
+# @app.delete("/api/cloudsaves/", status_code = 200)
+# def cloudsave_delete(uuid, response: Response, uuid = Header(None))
