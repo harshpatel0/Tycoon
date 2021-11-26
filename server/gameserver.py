@@ -81,15 +81,27 @@ class API():
       cloud_save_file.write(data)
     
   def delete_cloudsave(self, uuid):
-
-    print(f"[DEBUG] UUID: {uuid}")
-    print(f"[DEBUG] Path: {os.getcwd()}")
-
     try:
       os.remove(f'{os.getcwd()}/cloudsaves/{uuid}.sav')
       return 1
     except Exception:
       return "NOTFOUND"
+    
+  def patch_cloudsave(self, uuid, data):
+
+    data = data.encode('utf-8')
+    try:
+      save_file = open(f"cloudsaves/{uuid}.sav", 'rb')
+      save_file.close()
+
+    except Exception:
+      return "NOTFOUND"
+
+    os.remove(f"{os.getcwd()}/cloudsaves/{uuid}.sav")
+    with open(f'cloudsaves/{uuid}.sav', 'wb') as file:
+      file.write(data)
+    
+    return None
 
 app = FastAPI()
 
@@ -141,21 +153,19 @@ def cloudsave_put(response: Response, uuid = Header(None), data = Header(None)):
 
   if data == None or uuid == None:
     response.status_code = 400
-    return None
+
   api.put_cloudsave(uuid, data)
+  return None
 
 @app.delete("/api/cloudsaves/", status_code = 200)
 def cloudsave_delete(response: Response, uuid = Header(None)):
   
   if uuid == None:
     response.status_code = 400
-    return None
   
   delete_response = api.delete_cloudsave(uuid)
 
   if delete_response == "NOTFOUND":
     response.status_code = 404
-    return None
   
-  else:
-    return None
+  return None
