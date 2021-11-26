@@ -127,8 +127,7 @@ def server_name():
 
 @app.get("/api/server/version")
 def server_version():
-  return api.respond("version",)
-
+  return api.respond("version")
 
 # Cloudsave Handler
 
