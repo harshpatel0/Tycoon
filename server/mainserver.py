@@ -97,7 +97,7 @@ def cloudsave_put(response: Response, uuid = Header(None), data = Header(None)):
   api.put_cloudsave(uuid, data)
   return None
 
-@app.delete("/api/cloudsaves/", status_code = 200)
+@app.delete("/api/cloudsaves/", status_code = 204)
 def cloudsave_delete(response: Response, uuid = Header(None)):
   
   if uuid == None:
@@ -106,6 +106,20 @@ def cloudsave_delete(response: Response, uuid = Header(None)):
   delete_response = api.delete_cloudsave(uuid)
 
   if delete_response == "NOTFOUND":
+    response.status_code = 404
+  
+  return None
+
+
+# Used to update cloudsaves
+@app.patch("/api/cloudsaves/", status_code = 201)
+def cloudsave_update(response: Response, uuid = Header(None), data = Header(None)):
+  if uuid == None or data == None:
+    response.status_code = 300
+  
+  patch_response = api.patch_cloudsave(uuid, data)
+
+  if patch_response == "NOTFOUND":
     response.status_code = 404
   
   return None
