@@ -1,6 +1,5 @@
 from fastapi import FastAPI, Header, Response
 from api import API
-import os
 
 properties = {
   "Amy's Baking Company": {
@@ -60,7 +59,7 @@ def root():
   api.respond("ping")
 
 @app.get("/api/properties")
-def properties():
+def return_props():
   return api.respond("properties")
 
 @app.get("/api/server/name")
