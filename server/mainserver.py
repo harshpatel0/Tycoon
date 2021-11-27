@@ -110,7 +110,6 @@ def cloudsave_delete(response: Response, uuid = Header(None)):
   
   return None
 
-
 # Used to update cloudsaves
 @app.patch("/api/cloudsaves/", status_code = 201)
 def cloudsave_update(response: Response, uuid = Header(None), data = Header(None)):

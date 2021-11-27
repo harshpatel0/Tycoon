@@ -1,11 +1,18 @@
 import os
 
 class API():
+
   name = ""
   properties = {}
   version = 0
 
   def respond(self, query):
+
+    """Responds with data about the server
+
+    Returns:
+        [String]: [data]
+    """
 
     if self.name == "" or self.properties == {} or self.version == 0:
       return "API not initialized"
@@ -19,6 +26,7 @@ class API():
       return self.version
   
   def retrieve_cloudsave(self, uuid):
+
     try:
       with open(f'cloudsaves/{uuid}.sav', 'rb') as cloud_save_file:
         cloudsave_data = cloud_save_file.read()
