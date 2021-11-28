@@ -70,6 +70,7 @@ class GenerateUUID(GenerateSeed):
 
   def generate_uuid(self):
     random.seed(str(self.make_seed()))
+    self.pick_format()
     
     for character in self.chosen_format:
       if character == "-":
@@ -81,7 +82,8 @@ class GenerateUUID(GenerateSeed):
           self.uuid = self.uuid + random.choice(self.NUMBERS)
         except Exception:
           self.uuid = self.uuid + random.choice(self.ALPHABET)
+        
+    return self.uuid
 
 generator = GenerateUUID()
 generator.generate_uuid()
-print(generator.uuid)

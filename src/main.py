@@ -1,27 +1,22 @@
 import requests
+import curses
 from cryptography.fernet import Fernet
 from propertydataloader import download_property_data, load_local_property_data
 from checkversion import check_version
 from time import sleep
 import savedata
-import uuidhandler
+from uuidhandler import UUIDHandler
 import inquirer
 
 VERSION = 0.01
 connected_to_servers = False
 
-uuid = uuidhandler.check_uuid()
-
-if uuid == 'UUIDEXISTS':
-  uuid = uuidhandler.load_uuid()
-else:
-  uuid = uuidhandler.generate_uuid()
-
-print(uuid)
+uuid_handler = UUIDHandler()
+uuid = uuid_handler.get_uuid()
 
 ENCRYPTOR = Fernet(b'jm3YewpnyOAnk-tyXNsN9mx0ZLYtnaASuKsaPoYNxhk=')
 
-def connect_to_game_server(address):
+def connect_to_servers(address):
   if address == '':
     return 'FAILED'
 
@@ -39,11 +34,11 @@ def connect_to_game_server(address):
   else:
     return 'FAILED'
 
-# connectivity_prompt = [
-#   inquirer.List("connectivity-prompt",
-#                 message="Do you want to connect to a game server",
-#                 choices=["Yes", "No"])
-# ]
+connectivity_prompt = [
+  inquirer.List("connectivity-prompt",
+                message="Do you want to connect to a game server",
+                choices=["Yes", "No"])
+]
 
 server_address = [
   inquirer.Text('server_address', 
@@ -56,7 +51,7 @@ connectivity_prompt = sorted(set(connectivity_prompt.values()), reverse=True)[-1
 if connectivity_prompt == 'Yes':
   server_address = inquirer.prompt(server_address)
   server_address = sorted(set(server_address.values()), reverse=True)[-1]
-  status = connect_to_game_server(server_address)
+  status = connect_to_servers(server_address)
 
   if status == 'SUCCESS':
     connected_to_servers = True
@@ -93,10 +88,10 @@ else:
 
 # Getting the game save data
 
-game_save_existance_status = gamedata.check_save()
+game_save_existance_status = savedata.check_save()
 
 if game_save_existance_status == 'SAVEEXISTS':
-  gamedata.load_save()
+  savedata.load_save()
 
 else:
   if connected_to_servers:
@@ -113,23 +108,23 @@ else:
     request_cloud_save_prompt = sorted(set(request_cloud_save_prompt.values()), reverse=True)[-1]
 
     if request_cloud_save_prompt.lower() == 'yes':
-      clouddata_response = gamedata.cloudsave(address=server_address, uuid=uuid)
+      clouddata_response = savedata.cloudsave(address=server_address, uuid=uuid)
 
       if clouddata_response == 'FAILED':
         print("Failed to retrieve cloud data")
         print("Creating a save file")
-        game_data = gamedata.create_save()
+        game_data = savedata.create_save()
 
       elif clouddata_response == 'NOTFOUND':
         print("Your cloudsave data wasn't found")
         print("Creating a save file")
-        game_data = gamedata.create_save()
+        game_data = savedata.create_save()
       
       else:
         game_data = clouddata_response
     
     else:
-      game_data = gamedata.create_save()
+      game_data = savedata.create_save()
 
 class Game():
   def __init__(self) -> None:

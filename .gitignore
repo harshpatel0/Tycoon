@@ -11,3 +11,6 @@ src/dependencies/why.md
 src/dependencies/wmic.exe
 src/dependencies/WMIC.exe.mui
 src/dependencies/WMICOOKR.dll
+uuid.dat
+src/__pycache__
+src/rewritten/

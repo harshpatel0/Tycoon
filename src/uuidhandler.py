@@ -1,37 +1,35 @@
-from cryptography.fernet import Fernet
 from advancedgenerateuuid import GenerateUUID
+import os
 
 class UUIDHandler():
 
-  uuid = ""
-
-  def check_uuid(self):
-    try:
-      this_is_a_shit_way_of_doing_things = open('uuid.dat')
-      this_is_a_shit_way_of_doing_things.close()
-
-      return 'UUIDEXISTS'
-    except IOError:
-      return 'UUIDDOESNTEXIST'
-    
-  def load_uuid(self):
-    with open('uuid.dat', 'r') as uuid_file:
-      uuid = uuid_file.read()
-    
-    self.uuid = uuid
-    return uuid
+  def load_uuid_from_file(self):
+    with open('uuid.dat', 'r') as uuidfile:
+      self.uuid = uuidfile.read()
+      return self.uuid
     
   def save_uuid(self, uuid):
-    with open('uuid.dat', 'w') as uuid_file:
-      uuid_file.write(uuid)
-    
+
+    with open('uuid.dat', 'w') as uuidfile:
+      uuidfile.write(uuid)
+      return 0
+  
+  def check_for_pregenerated_uuid(self):
+    if os.path.exists('uuid.dat'):
+      return True
+    else:
+      return False
+  
   def generate_uuid(self):
-    generator = GenerateUUID()
-    generator.generate_uuid()
-    
+    generator = GenerateUUID()    
     generated_uuid = generator.generate_uuid()
     
-    self.save_uuid(uuid=generated_uuid)
-    self.uuid = generated_uuid
-
+    self.save_uuid(uuid = generated_uuid)
+    
     return generated_uuid
+  
+  def get_uuid(self):
+    if self.check_for_pregenerated_uuid() == True:
+      return self.load_uuid_from_file()
+    else:
+      return self.generate_uuid()
