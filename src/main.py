@@ -3,7 +3,7 @@ from cryptography.fernet import Fernet
 from propertydataloader import download_property_data, load_local_property_data
 from checkversion import check_version
 from time import sleep
-import gamedata
+import savedata
 import uuidhandler
 import inquirer
 
