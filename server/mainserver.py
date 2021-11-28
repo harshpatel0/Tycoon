@@ -2,45 +2,14 @@ from fastapi import FastAPI, Header, Response
 from api import API
 
 properties = {
-  "Amy's Baking Company": {
-    'dailyExpenses': 750,
-    'dailyProfit': 189,
-    'cost': 8380,
-    'location': "Somewhere idk",
-    'set': "Gordon Ramsay"
-  },
-
-  "Friedlander's Office": {
-    'dailyExpenses': 153,
-    'dailyProfit': 1557,
-    'cost': 36425,
-    'location': "Los Santos Highway",
-    'set': "Grand Theft Auto Property Pack"
-  },
-
-  "Roman's Cabs": {
-    'dailyExpenses': 254,
-    'dailyProfit': 472,
-    'cost': 7586,
-    'location': 'Bohan',
-    'set': "Grand Theft Auto Property Pack"
-  },
-
-  'Anteiku': {
-    'dailyExpenses': 124,
-    'dailyProfit': 345,
-    'cost': 10571,
-    'location': "Tokyo, Japan",
-    'set': "Tokyo Ghoul"
-  },
 
   'Test Joint': {
     'dailyExpenses': 9999,
     'dailyProfit': 99999,
     'cost': 999999,
-    'location': 'Your motha',
-    'set': 'Buy this i fucking dare u'
-  },
+    'location': 'Test',
+    'set': 'Test'
+  }
 }
 
 # Server Properties
