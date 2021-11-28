@@ -1,51 +1,37 @@
-import random
 from cryptography.fernet import Fernet
+from advancedgenerateuuid import GenerateUUID
 
-FORMAT = "111a1111-a11a-11a1-a111-11111111111"
+class UUIDHandler():
 
-letters_as_string = 'abcdefghijklmnopqrstuvwxyz'
-letters = []
+  uuid = ""
 
-for letter in letters_as_string:
-  letters.append(letter)
+  def check_uuid(self):
+    try:
+      this_is_a_shit_way_of_doing_things = open('uuid.dat')
+      this_is_a_shit_way_of_doing_things.close()
 
-def generate_letter():
-  return random.choice(letters)
-
-def generate_number():
-  return random.randint(0, 9)
-
-def check_uuid():
-  try:
-    this_is_a_shit_way_of_doing_things = open('uuid.dat')
-    this_is_a_shit_way_of_doing_things.close()
-
-    return 'UUIDEXISTS'
-  except IOError:
-    return 'UUIDDOESNTEXIST'
-  
-def load_uuid():
-  with open('uuid.dat', 'r') as uuid_file:
-    uuid = uuid_file.read()
-  return uuid
-  
-def save_uuid(uuid):
-  with open('uuid.dat', 'w') as uuid_file:
-    uuid_file.write(uuid)
-  
-def generate_uuid():
-  final_uuid = ''
-
-  for character in FORMAT:
-    if character == '-':
-      final_uuid = final_uuid + '-'
+      return 'UUIDEXISTS'
+    except IOError:
+      return 'UUIDDOESNTEXIST'
     
-    elif character.isalpha():
-      final_uuid = final_uuid + generate_letter()
+  def load_uuid(self):
+    with open('uuid.dat', 'r') as uuid_file:
+      uuid = uuid_file.read()
     
-    else:
-      final_uuid = final_uuid + str(generate_number())
+    self.uuid = uuid
+    return uuid
+    
+  def save_uuid(self, uuid):
+    with open('uuid.dat', 'w') as uuid_file:
+      uuid_file.write(uuid)
+    
+  def generate_uuid(self):
+    generator = GenerateUUID()
+    generator.generate_uuid()
+    
+    generated_uuid = generator.generate_uuid()
+    
+    self.save_uuid(uuid=generated_uuid)
+    self.uuid = generated_uuid
 
-  save_uuid(uuid=final_uuid)
-
-  return final_uuid
+    return generated_uuid
