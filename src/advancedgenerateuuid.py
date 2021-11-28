@@ -43,8 +43,7 @@ class GenerateSeed():
     for i in range(len(unprocessed_pids)):
       processed_pids = processed_pids + int(unprocessed_pids[i])
 
-    linebreaks_found = linebreaks_found / 8192
-
+    linebreaks_found = linebreaks_found / 256_000
     return round(processed_pids / linebreaks_found)
 
   def make_seed(self):
@@ -84,6 +83,3 @@ class GenerateUUID(GenerateSeed):
           self.uuid = self.uuid + random.choice(self.ALPHABET)
         
     return self.uuid
-
-generator = GenerateUUID()
-generator.generate_uuid()
