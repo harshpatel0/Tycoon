@@ -7,3 +7,7 @@ src/WMIC.exe
 src/WMICOOKR.dll
 src/WMIC.exe.mui
 src/customwmic.exe
+src/dependencies/why.md
+src/dependencies/wmic.exe
+src/dependencies/WMIC.exe.mui
+src/dependencies/WMICOOKR.dll
