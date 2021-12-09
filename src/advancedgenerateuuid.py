@@ -55,7 +55,7 @@ class GenerateSeed():
   
 class GenerateUUID(GenerateSeed):
 
-  FORMATS = ['a1a11aaa-a11a-111a-aaaa-a1a1111aaa11', '1aaa1aaa-a1a1-1aa1-1a11-a111a1a11a1a', '1aa1111a-11a1-111a-a111-1a11a11a1111', 'a11a111a-aa11-11a1-a1a1-1111111a111a', '111aaaa1-1111-1111-1a11-1aaa11a1a1aa', '11a1aaa1-aaa1-1111-1111-1aaaa1aa1111', '1aaa1111-1aa1-111a-1a11-11a1aaa1a111', '1a11a11a-a1a1-1a11-a111-111a1111a111', 'a1a1111a-11a1-1a11-1111-aa1111111aaa', 'a11aa111-aa1a-1111-1111-a1a1a11111aa', '11a1a11a-11a1-1aaa-111a-1111111a1aa1', '11111111-11aa-11aa-1aa1-11111a1aaa1a', '11111aaa-a11a-1a11-1a11-1a11a1a11111', '111a1a11-a1aa-1a1a-a11a-a111a1a1111a']
+  FORMATS = ['a1a11aaa1a11aa111a1aaaaaa1a1111aaa11', '1aaa1aaa1a1a1a1aa111a11aa111a1a11a1a', '1aa1111aa11a11111aaa11111a11a11a1111', 'a11a111a-aa11111a11a1a111111111a111a', '111aaaa11111111111a1a11a1aaa11a1a1aa', '11a1aaa1aaaa1a1111a1111a1aaaa1aa1111', '1aaa111111aa11111a11a11111a1aaa1a111', '1a11a11a1a1a111a11aa111a111a1111a111', 'a1a1111aa11a1a1a11a11111aa1111111aaa', 'a11aa1111aa1a11111111111a1a1a11111aa', '11a1a11aa11a1a1aaaa111aa1111111a1aa1', '11111111111aa111aa11aa1111111a1aaa1a', '11111aaaaa11aa1a11a1a11a1a11a1a11111', '111a1a111a1aa11a1a1a11aaa111a1a1111a']
   chosen_format = 0
 
   NUMBERS = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -72,14 +72,10 @@ class GenerateUUID(GenerateSeed):
     self.pick_format()
     
     for character in self.chosen_format:
-      if character == "-":
-        self.uuid = self.uuid + "-"
-
-      else:
-        try:
-          int(character)
-          self.uuid = self.uuid + random.choice(self.NUMBERS)
-        except Exception:
-          self.uuid = self.uuid + random.choice(self.ALPHABET)
+      try:
+        int(character)
+        self.uuid = self.uuid + random.choice(self.NUMBERS)
+      except Exception:
+        self.uuid = self.uuid + random.choice(self.ALPHABET)
         
     return self.uuid
