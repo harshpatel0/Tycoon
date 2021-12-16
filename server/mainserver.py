@@ -64,13 +64,13 @@ def server_version():
 # Cloudsave Handler
 
 @app.get("/api/cloudsaves/")
-def cloudsave_get(response: Response, uuid = Header(None)):
+def cloudsave_get(response: Response, username = Header(None)):
 
-  if uuid == None:
+  if username == None:
     response.status_code = 400
     return None
 
-  cloudsave_response = api.retrieve_cloudsave(uuid)
+  cloudsave_response = api.retrieve_cloudsave(username)
 
   if cloudsave_response == "NOTFOUND":
     response.status_code = 404
@@ -80,21 +80,21 @@ def cloudsave_get(response: Response, uuid = Header(None)):
     return cloudsave_response
 
 @app.put("/api/cloudsaves/", status_code = 201)
-def cloudsave_put(response: Response, uuid = Header(None), data = Header(None)):
+def cloudsave_put(response: Response, username = Header(None), data = Header(None)):
 
-  if data == None or uuid == None:
+  if data == None or username == None:
     response.status_code = 400
 
-  api.put_cloudsave(uuid, data)
+  api.put_cloudsave(username, data)
   return None
 
 @app.delete("/api/cloudsaves/", status_code = 204)
-def cloudsave_delete(response: Response, uuid = Header(None)):
+def cloudsave_delete(response: Response, username = Header(None)):
   
-  if uuid == None:
+  if username == None:
     response.status_code = 400
   
-  delete_response = api.delete_cloudsave(uuid)
+  delete_response = api.delete_cloudsave(username)
 
   if delete_response == "NOTFOUND":
     response.status_code = 404
@@ -103,11 +103,11 @@ def cloudsave_delete(response: Response, uuid = Header(None)):
 
 # Used to update cloudsaves
 @app.patch("/api/cloudsaves/", status_code = 201)
-def cloudsave_update(response: Response, uuid = Header(None), data = Header(None)):
-  if uuid == None or data == None:
+def cloudsave_update(response: Response, username = Header(None), data = Header(None)):
+  if username == None or data == None:
     response.status_code = 300
   
-  patch_response = api.patch_cloudsave(uuid, data)
+  patch_response = api.patch_cloudsave(username, data)
 
   if patch_response == "NOTFOUND":
     response.status_code = 404
