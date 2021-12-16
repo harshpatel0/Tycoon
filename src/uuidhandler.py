@@ -1,27 +1,27 @@
-from advancedgenerateuuid import GenerateUUID
+from generateusername import GenerateUsername
 import os
 
-class UUIDHandler():
+class UsernameHandler():
 
   def load_uuid_from_file(self):
-    with open('uuid.dat', 'r') as uuidfile:
+    with open('username.dat', 'r') as uuidfile:
       self.uuid = uuidfile.read()
       return self.uuid
     
   def save_uuid(self, uuid):
 
-    with open('uuid.dat', 'w') as uuidfile:
+    with open('username.dat', 'w') as uuidfile:
       uuidfile.write(uuid)
       return 0
   
   def check_for_pregenerated_uuid(self):
-    if os.path.exists('uuid.dat'):
+    if os.path.exists('username.dat'):
       return True
     else:
       return False
   
   def generate_uuid(self):
-    generator = GenerateUUID()    
+    generator = GenerateUsername()    
     generated_uuid = generator.generate_uuid()
     
     self.save_uuid(uuid = generated_uuid)

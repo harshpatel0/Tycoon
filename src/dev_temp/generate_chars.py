@@ -1,5 +1,3 @@
-import random
-
 alphabets = "abcdefghijklmnopqrstuvwxyz"
 numbers = "123456789"
 
