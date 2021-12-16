@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Header, Response
 from api import API
+from keyhandler import Keys
 
 properties = {
 
@@ -11,6 +12,18 @@ properties = {
     'set': 'Test'
   }
 }
+
+def keys():
+  global key
+  keyhandler = Keys()
+  if keyhandler.check_key() == False:
+    keyhandler.generate_key()
+  else:
+    keyhandler.load_key()
+
+  key = keyhandler.key
+
+keys()
 
 # Server Properties
 
@@ -38,6 +51,15 @@ def server_name():
 @app.get("/api/server/version")
 def server_version():
   return api.respond("version")
+
+""""
+This key is decoded to be in string format
+and have to be encoded back to bytes format
+to be used as a key to decrypt
+"""
+@app.get("/api/server/key")
+def server_version():
+  return key
 
 # Cloudsave Handler
 
