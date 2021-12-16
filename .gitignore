@@ -1,5 +1,7 @@
 /src/__pycache__
 /server/cloudsaves/
+/src/__pycache__
+/src/key
 /server/__pycache__
 server/__pycache__/gameserver.cpython-39.pyc
 todo
@@ -14,3 +16,6 @@ src/dependencies/WMICOOKR.dll
 uuid.dat
 src/__pycache__
 src/rewritten/
+username.dat
+server/key.dat
+server/key copy.dat

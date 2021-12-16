@@ -6,6 +6,9 @@ import requests
 # This key is used to encrypt and decrypt save and profile files
 KEY = b'jm3YewpnyOAnk-tyXNsN9mx0ZLYtnaASuKsaPoYNxhk='
 
+def get_key():
+  pass
+
 def cloudsave(address, uuid):
   print("Requesting cloud save from the server")
 

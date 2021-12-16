@@ -5,13 +5,13 @@ from propertydataloader import download_property_data, load_local_property_data
 from checkversion import check_version
 from time import sleep
 import savedata
-from uuidhandler import UUIDHandler
+from uuidhandler import UsernameHandler
 import inquirer
 
 VERSION = 0.01
 connected_to_servers = False
 
-uuid_handler = UUIDHandler()
+uuid_handler = UsernameHandler()
 uuid = uuid_handler.get_uuid()
 
 ENCRYPTOR = Fernet(b'jm3YewpnyOAnk-tyXNsN9mx0ZLYtnaASuKsaPoYNxhk=')
