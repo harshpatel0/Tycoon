@@ -45,7 +45,6 @@ class KeyDashboard(Keys):
     # y, x
 
     screen.clear()
-    max_rows, max_cols = screen.getmaxyx()
     screen.addstr(1,1, f"Server Key Dashboard")
     screen.addstr(3, 6, f"Key: {self.load_key()}")
     screen.addstr(5, 6, f"Key Options")
@@ -54,7 +53,6 @@ class KeyDashboard(Keys):
   
   def render_reset_warning(self, screen):
     screen.clear()
-    max_rows, max_cols = screen.getmaxyx()
     screen.addstr(1,1, f"Server Key Dashboard > Reset Key")
     screen.addstr(3, 6, f"WARNING")
     screen.addstr(4, 6, "*" * len('warning'))
@@ -66,7 +64,6 @@ class KeyDashboard(Keys):
 
   def render_reset_final_screen(self, screen):
     screen.clear()
-    max_rows, max_cols = screen.getmaxyx()
     screen.addstr(1,1, f"Server Key Dashboard > Reset Key")
     screen.addstr(3, 6, f"Success")
     screen.addstr(4, 6, "*" * len('success'))

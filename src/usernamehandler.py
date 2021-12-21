@@ -19,8 +19,8 @@ class UsernameHandler():
       return True
     else:
       return False
-  
-  def generate_uuid(self):
+    
+  def generate_username(self):
     generator = GenerateUsername()    
     generated_uuid = generator.generate_uuid()
     
@@ -28,8 +28,8 @@ class UsernameHandler():
     
     return generated_uuid
   
-  def get_uuid(self):
+  def get_username(self):
     if self.check_for_pregenerated_uuid() == True:
       return self.load_uuid_from_file()
     else:
-      return self.generate_uuid()
+      return self.generate_username()

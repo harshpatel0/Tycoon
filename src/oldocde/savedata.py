@@ -81,14 +81,3 @@ def load_save():
   decrypted_save = json.loads(decrypted_save.decode('utf-8'))
 
   return decrypted_save
-
-def check_save():
-  # Checks if the file exists or not, ik this is a really really really shit way of doing this
-  # but I couldn't care less, optimizing code is for nerds not for us elite chad programmers
-  try:
-    this_is_a_shit_way_of_doing_things = open('game.sav')
-    this_is_a_shit_way_of_doing_things.close()
-
-    return 'SAVEEXISTS'
-  except IOError:
-    return 'NOSAVEFOUND'
