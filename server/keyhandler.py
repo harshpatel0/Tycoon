@@ -91,7 +91,7 @@ class KeyDashboard(Keys):
           break
       
       if key_pressed == 'n':
-        str = ""
+        pass
 
       return None
     
