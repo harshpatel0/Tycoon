@@ -96,22 +96,16 @@ class RequestHandler:
     return decoded_key.encode()
     
   def get_server_name(self):
-    try:
-      name = self.query_data('/api/server/name')
-      return name.text
-    except Exception:
-      return "NO_CONNECTION"
+    request = self.query_data('/api/server/name')
+    if request.text == "NO_CONNECTION": return "NO_CONNECTION"
+    return request.text
     
   def get_property_data(self):
-    try:
-      property_data = self.query_data('/api/properties')
-      return property_data.text
-    except Exception:
-      return "NO_CONNECTION"
+    request = self.query_data('/api/properties')
+    if request.text == "NO_CONNECTION": return "NO_CONNECTION"
+    return request.text
     
   def get_server_version(self):
-    try:
-      server_version = self.query_data('/api/server/version')
-      return float(server_version.text)
-    except Exception:
-      return "NO_CONNECTION"
+    request = self.query_data('/api/server/version')
+    if request.text == "NO_CONNECTION": return "NO_CONNECTION"
+    return float(request.text)
