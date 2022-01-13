@@ -1,6 +1,6 @@
 import requests
 
-class RequestHandlers:
+class RequestHandler:
 
   server_url = ""
   username = ""
