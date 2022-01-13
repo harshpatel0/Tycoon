@@ -97,21 +97,21 @@ class RequestHandler:
     
   def get_server_name(self):
     try:
-      name = requests.request("GET", f'{self.server_url}/api/server/name')
+      name = self.query_data('/api/server/name')
       return name.text
     except Exception:
       return "NO_CONNECTION"
     
-  def get_props(self):
+  def get_property_data(self):
     try:
-      name = requests.request("GET", f'{self.server_url}/api/properties')
-      return name.text
+      property_data = self.query_data('/api/properties')
+      return property_data.text
     except Exception:
       return "NO_CONNECTION"
     
   def get_server_version(self):
     try:
-      name = requests.request("GET", f'{self.server_url}/api/server/version')
-      return name.text
+      server_version = self.query_data('/api/server/version')
+      return float(server_version.text)
     except Exception:
       return "NO_CONNECTION"
