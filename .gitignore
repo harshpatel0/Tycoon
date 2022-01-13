@@ -19,3 +19,6 @@ src/rewritten/
 username.dat
 server/key.dat
 server/key copy.dat
+client/requesthandlers.test.py
+client/__pycache__/requesthandlers.cpython-39.pyc
+Tycoon.code-workspace
