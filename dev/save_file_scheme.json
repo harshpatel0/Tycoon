@@ -1,6 +1,6 @@
 {
   "name": "TestName",
   "empire-name": "TestEmpire",
-  "money": 10000,
+  "cash": 10000,
   "properties": ["Test Joint"]
 }

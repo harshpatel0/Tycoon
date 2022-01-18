@@ -44,15 +44,14 @@ class DataHandler:
   
   def generate_save_file(self, name, empire_name):
 
-    starting_money = 10000
+    starting_cash = 10000
 
     save_file = {
       "name": name,
       "empire-name": empire_name,
-      "money": starting_money
+      "money": starting_cash
     }
 
     self.save_data = save_file
 
     self.upload_savefile(self.encrypt_save_file())
-    self.encrypt_save_file()
