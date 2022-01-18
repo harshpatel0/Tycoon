@@ -10,7 +10,7 @@ class DataHandler:
   save_data = None
   cryptographyhandler = Fernet(key)
 
-  def fill_data(self, server_url, username, data):
+  def fill_arguments(self, server_url, username, data = None):
     requesthandler.server_url = server_url
     requesthandler.username = username
     requesthandler.data = data
@@ -36,3 +36,23 @@ class DataHandler:
   
   def get_property_data(self):
     return requesthandler.get_property_data()
+  
+  def upload_savefile(self, encrypted_save_file):
+    requesthandler.data = encrypted_save_file
+    requesthandler.upload_cloudsaves()  
+    return None
+  
+  def generate_save_file(self, name, empire_name):
+
+    starting_money = 10000
+
+    save_file = {
+      "name": name,
+      "empire-name": empire_name,
+      "money": starting_money
+    }
+
+    self.save_data = save_file
+
+    self.upload_savefile(self.encrypt_save_file())
+    self.encrypt_save_file()
