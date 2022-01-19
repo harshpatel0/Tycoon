@@ -83,18 +83,18 @@ class GenerateUsername(GenerateSeed):
 
 class UsernameHandler():
 
-  def load_uuid_from_file(self):
-    with open('username.dat', 'r') as uuidfile:
-      self.uuid = uuidfile.read()
-      return self.uuid
+  def load_username_from_file(self):
+    with open('username.dat', 'r') as usernamefile:
+      self.username = usernamefile.read()
+      return self.username
     
-  def save_uuid(self, uuid):
+  def save_username(self, username):
 
-    with open('username.dat', 'w') as uuidfile:
-      uuidfile.write(uuid)
+    with open('username.dat', 'w') as usernamefile:
+      usernamefile.write(username)
       return 0
   
-  def check_for_pregenerated_uuid(self):
+  def check_for_pregenerated_username(self):
     if os.path.exists('username.dat'):
       return True
     else:
@@ -104,12 +104,12 @@ class UsernameHandler():
     generator = GenerateUsername()    
     generated_uuid = generator.generate_uuid()
     
-    self.save_uuid(uuid = generated_uuid)
+    self.save_username(username = generated_uuid)
     
     return generated_uuid
   
   def get_username(self):
-    if self.check_for_pregenerated_uuid() == True:
-      return self.load_uuid_from_file()
+    if self.check_for_pregenerated_username() == True:
+      return self.load_username_from_file()
     else:
       return self.generate_username()
