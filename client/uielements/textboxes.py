@@ -1,5 +1,4 @@
 import curses
-from typing import Text
 
 class TextBoxCore():
   screen = None
