@@ -1,10 +1,10 @@
 import curses
+from typing import Text
 
-class AlphaNumericTextBox():
+class TextBoxCore():
   screen = None
   
   # These don't need to be modified by code, only modified when the core is inherited
-  character_set = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
   
   backspace_key = 449
   accept_key = 451
@@ -84,7 +84,13 @@ class AlphaNumericTextBox():
       self.display_new_text(text_area_pos, position_y)
     
 
-class NumericTextBox(AlphaNumericTextBox):
+class AlphaNumericTextBox(TextBoxCore):
+  character_set = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+
+  def __init__(self, screen) -> None:
+      super().__init__(screen)
+
+class NumericTextBox(TextBoxCore):
 
   character_set = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
 
@@ -93,8 +99,8 @@ class NumericTextBox(AlphaNumericTextBox):
 
 def run():
   screen = curses.initscr()
-  # textboxcore = AlphaNumericTextBox(screen)
-  # print(textboxcore.initialize_textbox("TextBox", (0,1), 4))
+  # alphanumerictextbox = AlphaNumericTextBox(screen)
+  # print(alphanumerictextbox.initialize_textbox("TextBox", (0,1), 4))
 
   numerictextbox = NumericTextBox(screen)
   numerictextbox.initialize_textbox("NumericTextBox", (0,1), 4)
