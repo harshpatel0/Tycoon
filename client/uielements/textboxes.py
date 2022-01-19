@@ -14,6 +14,7 @@ class TextBoxCore():
     self.screen = screen
     curses.noecho()
     curses.cbreak()
+    curses.curs_set(0) 
     screen.keypad(True)
 
 
@@ -26,12 +27,12 @@ class TextBoxCore():
     positon_x = position[0]
     positon_y = position[1]
 
-    self.screen.addstr(positon_y, positon_x, title+":"+"_"*max_chars)
+    self.screen.addstr(positon_y, positon_x, title+": "+"_"*max_chars)
     self.screen.addstr(position[1]+1, positon_x, "Backspace: Num7, Accept: Num9")
 
     # Finding the TextArea start position
 
-    text_area_pos = len(title)+1
+    text_area_pos = len(title)+3
 
     self.handle_textbox(text_area_pos, position[1], max_chars)
 
@@ -84,7 +85,7 @@ class TextBoxCore():
     
 
 class AlphaNumericTextBox(TextBoxCore):
-  character_set = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+  character_set = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', ' ']
 
   def __init__(self, screen) -> None:
       super().__init__(screen)
@@ -95,14 +96,3 @@ class NumericTextBox(TextBoxCore):
 
   def __init__(self, screen) -> None:
     super().__init__(screen)
-
-def run():
-  screen = curses.initscr()
-  alphanumerictextbox = AlphaNumericTextBox(screen)
-  print(alphanumerictextbox.initialize_textbox("TextBox", (0,1), 4))
-
-  # numerictextbox = NumericTextBox(screen)
-  # print(numerictextbox.initialize_textbox("NumericTextBox", (0,1), 4))
-
-if __name__ == "__main__":
-  run()
