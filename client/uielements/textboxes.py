@@ -98,11 +98,11 @@ class NumericTextBox(TextBoxCore):
 
 def run():
   screen = curses.initscr()
-  # alphanumerictextbox = AlphaNumericTextBox(screen)
-  # print(alphanumerictextbox.initialize_textbox("TextBox", (0,1), 4))
+  alphanumerictextbox = AlphaNumericTextBox(screen)
+  print(alphanumerictextbox.initialize_textbox("TextBox", (0,1), 4))
 
-  numerictextbox = NumericTextBox(screen)
-  numerictextbox.initialize_textbox("NumericTextBox", (0,1), 4)
+  # numerictextbox = NumericTextBox(screen)
+  # print(numerictextbox.initialize_textbox("NumericTextBox", (0,1), 4))
 
 if __name__ == "__main__":
   run()
