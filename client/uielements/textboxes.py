@@ -18,7 +18,7 @@ class TextBoxCore():
     screen.keypad(True)
 
 
-  def initialize_textbox(self, title, position, max_chars, clear_screen = False, button_prompts = True):
+  def create_textbox(self, title, position, max_chars, clear_screen = False, button_prompts = True):
     if clear_screen:
       self.screen.clear()
 
@@ -93,6 +93,13 @@ class AlphaNumericTextBox(TextBoxCore):
 class NumericTextBox(TextBoxCore):
 
   character_set = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+
+  def __init__(self, screen) -> None:
+    super().__init__(screen)
+  
+class AddressTextBox(TextBoxCore):
+
+  character_set = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', ':', '.']
 
   def __init__(self, screen) -> None:
     super().__init__(screen)

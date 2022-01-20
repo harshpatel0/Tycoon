@@ -34,7 +34,7 @@ api = API()
 
 api.name = "businessapi"
 api.properties = properties
-api.version = 0.01
+api.server_version = 0.01
 
 @app.get("/", status_code = 204)
 def root():
@@ -48,7 +48,7 @@ def return_props():
 def server_name():
   return api.respond("name")
 
-@app.get("/api/server/version")
+@app.get("/api/server/server-version")
 def server_version():
   return api.respond("version")
 

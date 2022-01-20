@@ -4,7 +4,7 @@ class API():
 
   name = ""
   properties = {}
-  version = 0
+  server_version = 0
 
   def respond(self, query):
 
@@ -14,7 +14,7 @@ class API():
         [String]: [data]
     """
 
-    if self.name == "" or self.properties == {} or self.version == 0:
+    if self.name == "" or self.properties == {} or self.server_version == 0:
       return "API not initialized"
     if query == "ping":
       return 1
@@ -23,7 +23,7 @@ class API():
     if query == "name":
       return self.name
     if query == "version":
-      return self.version
+      return self.server_version
   
   def retrieve_cloudsave(self, uuid):
 
