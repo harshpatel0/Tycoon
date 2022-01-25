@@ -84,7 +84,7 @@ class Main():
     encrypted_save = self.requesthandler.cloudsave_get()
     encrypted_save = encrypted_save.encode()
 
-    self.datahandler.save_data = self.datahandler.decrypt_encrypted_save(encrypted_save_file=encrypted_save)
+    self.datahandler.save_data = self.datahandler.get_save_file()
 
     self.screen.addstr(3, 1, "Loading Property Data")
 
