@@ -1,20 +1,21 @@
-from os import system
 import curses
+
+# Custom Handlers
 import requesthandler
 import datahandler
 import usernamehandler
 import inventoryhandler
 
+# UI Elements
 import uielements.textboxes
-
-# IPv4 Address = 19 chars
-# y, x
 
 client_version = 0.01
 
 class Main():
   
   screen = curses.initscr()
+
+  # Handler Modules
 
   requesthandler = requesthandler.RequestHandler()
   datahandler = datahandler.DataHandler()
@@ -70,10 +71,26 @@ class Main():
       return "CONNECTED"
     
   def retrieve_server_data(self):
+    self.screen.clear()
+
+    self.screen.addstr(0,0, "Loading")
+    self.screen.addstr(1,0, "-------")
+    self.screen.addstr(3,1, "Loading Save file")
+
     self.requesthandler.username = self.usernamehandler.get_username()
     self.server_name = self.requesthandler.get_server_name()
     self.server_version = self.requesthandler.get_server_version()
     
-    self.requesthandler.cloudsave_get()
+    encrypted_save = self.requesthandler.cloudsave_get()
+    encrypted_save = encrypted_save.encode()
+
+    self.datahandler.save_data = self.datahandler.decrypt_encrypted_save(encrypted_save_file=encrypted_save)
+
+    self.screen.addstr(3, 1, "Loading Property Data")
+
+    self.datahandler.get_property_data()
+    
+    self.screen.addstr(3,1, "Loading Game         ")
+
 
     # TODO: Finish shit here

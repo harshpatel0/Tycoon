@@ -1,3 +1,5 @@
+from os import RWF_APPEND
+import re
 import requesthandler
 from cryptography.fernet import Fernet
 
@@ -8,6 +10,7 @@ class DataHandler:
   key = requesthandler.get_decryption_key()
 
   save_data = None
+  property_data = None
   cryptographyhandler = Fernet(key)
 
   def fill_arguments(self, server_url, username, data = None):
@@ -35,7 +38,19 @@ class DataHandler:
     self.save_data = data
   
   def get_property_data(self):
-    return requesthandler.get_property_data()
+    properties = requesthandler.get_property_data()
+    self.property_data = requesthandler.get_property_data()
+    return properties
+  
+  def get_save_file(self):
+    request_to_server = requesthandler.cloudsave_get()
+    if request_to_server.text == "NOTFOUND":
+      self.generate_save_file()
+      return "GENERATE"
+
+    else:
+      self.decrypt_encrypted_save(request_to_server.text)
+      return self.save_data
   
   def upload_savefile(self, encrypted_save_file):
     requesthandler.data = encrypted_save_file
