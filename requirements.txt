@@ -1,0 +1,6 @@
+windows-curses
+cryptography
+fastapi
+uvicorn
+flask
+requests
