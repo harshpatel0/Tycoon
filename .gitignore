@@ -28,3 +28,5 @@ Tycoon-workspace.code-workspace
 client/uielements/__pycache__/
 client/uielements/__pycache__/textboxes.cpython-39.pyc
 key.dat
+client/modules/uielements/__pycache__/textboxes.cpython-39.pyc
+server/runserver.cmd

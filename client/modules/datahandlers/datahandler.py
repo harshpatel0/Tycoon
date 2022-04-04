@@ -1,11 +1,9 @@
-from os import RWF_APPEND
-import re
 import requesthandler
 from cryptography.fernet import Fernet
 
 requesthandler = requesthandler.RequestHandler()
 
-class DataHandler:
+class RawDataHandler:
 
   key = requesthandler.get_decryption_key()
 
@@ -38,9 +36,9 @@ class DataHandler:
     self.save_data = data
   
   def get_property_data(self):
-    properties = requesthandler.get_property_data()
-    self.property_data = requesthandler.get_property_data()
-    return properties
+    if self.property_data == None:
+      self.property_data = requesthandler.get_property_data()
+    return self.property_data
   
   def get_save_file(self):
     request_to_server = requesthandler.cloudsave_get()
@@ -64,9 +62,33 @@ class DataHandler:
     save_file = {
       "name": name,
       "empire-name": empire_name,
-      "money": starting_cash
+      "money": starting_cash,
+      "properties": []
     }
 
     self.save_data = save_file
 
     self.upload_savefile(self.encrypt_save_file())
+  
+
+class DataHandler(RawDataHandler):
+  def get_name(self):
+    return self.save_data['name']
+  
+  def get_empirename(self):
+    return self.save_data['empire-name']
+
+  def get_money(self):
+    return self.save_data['money']
+
+  def get_properties(self):
+    return list(self.save_data['properties'])
+  
+  def get_property_count(self, human_friendly):
+    properties = self.get_properties
+
+    if human_friendly:
+      return properties + 1
+    else:
+      return properties
+      
