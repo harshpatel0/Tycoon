@@ -1,27 +1,23 @@
 import curses
 
 # Import all Data Handlers
-import modules.datahandlers as datahandlers
+import modules.datahandlers
 
 # Import all UI elements
-import modules.uielements as uielements
+import modules.uielements
 
 client_version = 0.01
 
-requesthandler = datahandlers.requesthandler.RequestHandler()
-datahandler = datahandlers.datahandler.DataHandler()
-usernamehandler = datahandlers.usernamehandler.UsernameHandler()
-inventoryhandler = datahandlers.inventoryhandler.InventoryHandler()
+requesthandler = modules.datahandlers.requesthandler.RequestHandler()
+datahandler = modules.datahandlers.datahandler.DataHandler()
+usernamehandler = modules.datahandlers.usernamehandler.UsernameHandler()
+inventoryhandler = modules.datahandlers.inventoryhandler.InventoryHandler()
 
 screen = curses.initscr()
-
-# State Variables
-connected = False
 
 # Server Data 
 server_version = None
 server_name = None
-
 
 class Main():
   def __init__(self) -> None:
@@ -31,7 +27,7 @@ class Main():
     screen.keypad(True)
   
   def connect_to_server(self):
-    ipaddress_textbox = uielements.textboxes.AddressTextBox()
+    ipaddress_textbox = modules.uielements.textboxes.AddressTextBox()
 
     ipaddress = ipaddress_textbox.create_textbox("Server Address", (1,1), 19)
     screen.clear()    
@@ -43,7 +39,6 @@ class Main():
 
     if status != "NO_CONNECTION":
       screen.clear()
-      connected = True
 
     else:
       screen.clear()
@@ -87,7 +82,64 @@ class Main():
   
 class UserInterface:
   def __init__(self) -> None:
-    self.render_ui()
+    self.Dashboard
   
-  def render_ui(self):
+  class Dashboard:
+    name, empire_name, money = None, None, None
+
+    def __init__(self) -> None:
+      self.init_data()
+
+    def init_data(self):
+      self.name = datahandler.get_name()
+      self.empire_name = datahandler.get_empirename()
+      self.money = datahandler.get_money()
+    
+    # Remember the coords are y, x
+
+    def render(self):
+      screen.clear()
+      screen.addstr(0, 0, f"{self.empire_name} Dashboard")
+      screen.addstr(1, 0, f"Welcome back {self.name}")
+      screen.addstr(4, 0, "Business Statistics")
+
+      # Renders the business statistics
+
+      screen.addstr(5, 2, f"Capital: {self.money}")
+
+      # Renders property options
+
+      screen.addstr(4, 6, "Property Portfolio Management")
+      screen.addstr(5, 6, "View [p]roperty Portfolio")
+      screen.addstr(6, 6, "Visit the property [m]arket")
+
+      # Renders other options
+
+      screen.addstr(9, 0, "[H]elp")
+      screen.addstr(9, 8, "[E]dit Business Documents")
+
+      screen.refresh()
+    
+    def handle_keypress(self):
+      key_press = self.screen.get_wch()
+
+      if key_press == 'p':
+        UserInterface.PropertyPortfolio
+      if key_press == 'm':
+        UserInterface.PropertyMarket
+      if key_press == 'h':
+        UserInterface.GameHelp
+      if key_press == 'e':
+        UserInterface.BusinessIdentityManagement
+  
+  class PropertyPortfolio:
+    pass
+
+  class PropertyMarket:
+    pass
+
+  class GameHelp:
+    pass
+
+  class BusinessIdentityManagement:
     pass
