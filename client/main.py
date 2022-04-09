@@ -9,9 +9,9 @@ import modules.uielements
 client_version = 0.01
 
 requesthandler = modules.datahandlers.requesthandler.RequestHandler()
-datahandler = modules.datahandlers.datahandler.DataHandler()
 usernamehandler = modules.datahandlers.usernamehandler.UsernameHandler()
-inventoryhandler = modules.datahandlers.inventoryhandler.InventoryHandler()
+datahandler = modules.datahandlers.datahandler.DataHandler()
+# propertyhandler = modules.datahandlers.propertyhandler.PropertyHandler()
 
 screen = curses.initscr()
 
@@ -85,16 +85,17 @@ class UserInterface:
     self.Dashboard
   
   class Dashboard:
-    name, empire_name, money = None, None, None
+    name, empire_name, money, property_count = None, None, None, None
 
     def __init__(self) -> None:
       self.init_data()
 
     def init_data(self):
-      self.name = datahandler.get_name()
-      self.empire_name = datahandler.get_empirename()
-      self.money = datahandler.get_money()
-    
+      self.name = datahandler.name
+      self.empire_name = datahandler.empire_name
+      self.money = datahandler.money
+      self.property_count = datahandler.property_count
+
     # Remember the coords are y, x
 
     def render(self):
@@ -105,7 +106,10 @@ class UserInterface:
 
       # Renders the business statistics
 
+      # y, x
       screen.addstr(5, 2, f"Capital: {self.money}")
+      screen.addstr(6, 2, f"Properties: {self.property_count}")
+
 
       # Renders property options
 

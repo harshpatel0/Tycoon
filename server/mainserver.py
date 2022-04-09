@@ -2,6 +2,9 @@ from fastapi import FastAPI, Header, Response
 from api import API
 from keyhandler import Keys
 
+# We might need to migrate to Flask instead of FastAPI
+# Cuz I can't get this shit to work
+
 properties = {
 
   'Test Joint': {

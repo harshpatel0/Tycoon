@@ -1,94 +1,95 @@
-import requesthandler
-from cryptography.fernet import Fernet
+import backendhandler
 
-requesthandler = requesthandler.RequestHandler()
+backendhandler = backendhandler.DataHandler()
 
-class RawDataHandler:
+# Please note that anything to do with changes during gameplay is handled
+# in this module and not in the datahanlder (now backendhandler) module
+# The DataHandler (now backendhandler) module deals with the backend.
+# Please do remember that before creating useless functions
 
-  key = requesthandler.get_decryption_key()
+class DataHandler:
 
-  save_data = None
-  property_data = None
-  cryptographyhandler = Fernet(key)
+  save_data = backendhandler.save_data
+  proprty_data = backendhandler.property_data
 
-  def fill_arguments(self, server_url, username, data = None):
-    requesthandler.server_url = server_url
-    requesthandler.username = username
-    requesthandler.data = data
+  # Parsed Save file Data goes here
 
-    return None
+  name, empire_name = None, None 
+  money, properties, property_count = None, None, None
 
-  def get_save_file(self):
-    save_file = requesthandler.cloudsave_get()
-    return save_file
-
-  def decrypt_encrypted_save(self, encrypted_save_file):
-    
-    encrypted_save_file = self.get_save_file()
-  
-    self.save_data = self.cryptographyhandler.decrypt(encrypted_save_file)
-    return self.save_data
-  
-  def encrypt_save_file(self):
-    return self.cryptographyhandler.encrypt(self.save_data)
-  
-  def save_user_data(self, data):
-    self.save_data = data
-  
-  def get_property_data(self):
-    if self.property_data == None:
-      self.property_data = requesthandler.get_property_data()
-    return self.property_data
-  
-  def get_save_file(self):
-    request_to_server = requesthandler.cloudsave_get()
-    if request_to_server.text == "NOTFOUND":
-      self.generate_save_file()
-      return "GENERATE"
-
-    else:
-      self.decrypt_encrypted_save(request_to_server.text)
-      return self.save_data
-  
-  def upload_savefile(self, encrypted_save_file):
-    requesthandler.data = encrypted_save_file
-    requesthandler.upload_cloudsaves()  
-    return None
-  
-  def generate_save_file(self, name, empire_name):
-
-    starting_cash = 10000
-
-    save_file = {
-      "name": name,
-      "empire-name": empire_name,
-      "money": starting_cash,
-      "properties": []
-    }
-
+  def initialize(self, save_file):
     self.save_data = save_file
 
-    self.upload_savefile(self.encrypt_save_file())
+  def save_file_parser(self):
+    self.name = self.save_data['name']
+    self.empire_name = self.save_data['empire-name']
+    self.money = self.save_data['money']
+    self.properties = self.save_data['properties']
+    self.property_count = len(self.properties)
+
+  def save(self):
+    def upload(self):
+      backendhandler.save_data = self.save_data
+      backendhandler.upload_savefile(backendhandler.encrypt_save_file(self.save_data))
+
+    self.save_data['name'] = self.name
+    self.save_data['empire-name'] = self.empire_name
+    self.save_data['money'] = self.money
+    self.save_data['properties'] = self.properties
+
+    upload()
+    self.save_file_parser()
+
+    return "SUCCESS"
+
+  def remove_money(self, amount):
+    self.money = self.money - amount
+    self.save()
   
-
-class DataHandler(RawDataHandler):
-  def get_name(self):
-    return self.save_data['name']
+  def add_money(self, amount):
+    self.money = self.money + amount
+    self.save()
   
-  def get_empirename(self):
-    return self.save_data['empire-name']
-
-  def get_money(self):
-    return self.save_data['money']
-
-  def get_properties(self):
-    return list(self.save_data['properties'])
+  def add_property(self, property_name):
+    self.properties.append(property_name)
+    self.save()
   
-  def get_property_count(self, human_friendly):
-    properties = self.get_properties
+  def remove_property(self, property_name):
+    self.properties.remove(property_name)
+    self.save()
 
-    if human_friendly:
-      return properties + 1
-    else:
-      return properties
-      
+  def change_name(self, new_name):
+    self.name = new_name
+    self.save()
+  
+  def change_empire_name(self, new_empire_name):
+    self.empire_name = new_empire_name
+    self.save()
+  
+  def handle_all_buy(self, property_name):
+    # Get current property price
+    property_values = self.proprty_data['property_name']
+    property_cost = property_values['cost']
+
+    # Remove Money
+    self.money = self.money - property_cost
+
+    # Add Property
+    self.properties.append(property_name)
+
+    # Save changes
+    self.save()
+  
+  def handle_all_sell(self, property_name):
+    # Get current property price
+    property_values = self.proprty_data['property_name']
+    property_cost = property_values['cost']
+
+    # Add Money
+    self.money = self.money + property_cost
+
+    # Remove Property
+    self.properties.remove(property_name)
+
+    # Save changes
+    self.save()
