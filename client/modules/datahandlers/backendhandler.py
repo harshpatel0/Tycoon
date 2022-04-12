@@ -5,9 +5,9 @@ from cryptography.fernet import Fernet
 requesthandler = requesthandler.RequestHandler()
 
 # Please note that anything to do with changes during gameplay is handled
-# in the inventoryhandler (now datahandler) module and not in the datahanlder (now backendhandler) module
-# The DataHandler (now backendhandler) module deals with the backend.
-# Please do remember that before creating useless functions
+# in the inventoryhandler (now datahandler) module and not in the datahanlder
+# (now backendhandler) module. The DataHandler (now backendhandler) module 
+# deals with the backend. Please do remember that before creating useless functions
 
 class DataHandler:
 
