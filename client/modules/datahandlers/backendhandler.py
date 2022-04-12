@@ -1,3 +1,4 @@
+import cryptography
 import requesthandler
 from cryptography.fernet import Fernet
 
@@ -31,7 +32,10 @@ class DataHandler:
     
     encrypted_save_file = self.get_save_file()
   
-    self.save_data = self.cryptographyhandler.decrypt(encrypted_save_file)
+    try:
+      self.save_data = self.cryptographyhandler.decrypt(encrypted_save_file)
+    except cryptography.fernet.InvalidToken:
+      return "INCORRECT KEY"
     return self.save_data
   
   def encrypt_save_file(self):
@@ -52,7 +56,8 @@ class DataHandler:
       return "GENERATE"
 
     else:
-      self.decrypt_encrypted_save(request_to_server.text)
+      if self.decrypt_encrypted_save(request_to_server.text.encode()) == "INCORRECT KEY":
+        return "INCORRECT KEY"
       return self.save_data
   
   def upload_savefile(self, encrypted_save_file):

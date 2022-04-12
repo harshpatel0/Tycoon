@@ -1,5 +1,6 @@
 import curses
-
+from time import sleep
+from sys import exit
 # Import all Data Handlers
 import modules.datahandlers
 
@@ -11,7 +12,6 @@ client_version = 0.01
 requesthandler = modules.datahandlers.requesthandler.RequestHandler()
 usernamehandler = modules.datahandlers.usernamehandler.UsernameHandler()
 datahandler = modules.datahandlers.datahandler.DataHandler()
-# propertyhandler = modules.datahandlers.propertyhandler.PropertyHandler()
 
 screen = curses.initscr()
 
@@ -64,21 +64,42 @@ class Main():
     screen.addstr(0,0, "Loading")
     screen.addstr(1,0, "-------")
     screen.addstr(3,1, "Loading Save file")
+    screen.refresh()
 
     self.requesthandler.username = self.usernamehandler.get_username()
     self.server_name = self.requesthandler.get_server_name()
     self.server_version = self.requesthandler.get_server_version()
     
-    encrypted_save = self.requesthandler.cloudsave_get()
-    encrypted_save = encrypted_save.encode()
+    # encrypted_save = self.requesthandler.cloudsave_get()
+    # encrypted_save = encrypted_save.encode()
 
-    self.datahandler.save_data = self.datahandler.get_save_file()
-    screen.addstr(3, 1, "Loading Property Data")
+    # Handled by datahandler.get_save_file() function
 
-    self.datahandler.get_property_data()
-    screen.addstr(3,1, "Loading Game")
+    if self.datahandler.get_save_file() != "INCORRECT KEY":
+      screen.addstr(3, 1, "Loading Property Data")
+      screen.refresh()
 
-    UserInterface()
+      self.datahandler.get_property_data()
+      screen.addstr(3,1, "Loading Game")
+      screen.refresh()
+
+      UserInterface()
+    
+    screen.addstr(0, 0, "Loading Failed")
+    screen.addstr(1, 0, "--------------")
+    screen.addstr(3, 1, "The save file couldn't be decrypted by the key from the")
+    screen.addstr(4, 1, "server, the key might have changed, unfortunately there")
+    screen.addstr(5, 1, "is no way to get your previous save file back unless the")
+    screen.addstr(6, 1, "old key is backed up, contact the server host for help.")
+    screen.addstr(8, 1, "The game can not be launched, quit the game by pressing q")
+
+    screen.refresh()
+
+    while screen.get_wch() != "q":
+      pass
+    exit()
+
+      
   
 class UserInterface:
   def __init__(self) -> None:
@@ -125,7 +146,7 @@ class UserInterface:
       screen.refresh()
     
     def handle_keypress(self):
-      key_press = self.screen.get_wch()
+      key_press = screen.get_wch()
 
       if key_press == 'p':
         UserInterface.PropertyPortfolio
