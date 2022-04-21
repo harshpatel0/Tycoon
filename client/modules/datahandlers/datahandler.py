@@ -62,14 +62,45 @@ class DataHandler:
     self.name = new_name
     self.save()
   
-  def change_empire_name(self, new_empire_name):
-    self.empire_name = new_empire_name
+  def change_empire_name(self, new_name):
+    self.empire_name = new_name
     self.save()
-  
+
+  def check_buy_requirements(self, property_name, price):
+
+    temp_money = self.money - price
+
+    # This is a useless step, just for the fun of it
+    if property_name in self.properties and temp_money < 0:
+      return "SHAMBLES"
+
+    # Check if the property is already bought
+    if property_name in self.properties:
+      return "ALREADY PURCHASED"
+    
+    # Check if they have enough money
+    if temp_money < 0:
+      return "NO FUNDS"
+
+    return "SUCCESS"
+
+  def check_sell_requirements(self, property_name):
+    # Check if the property is already bought
+    if property_name not in self.properties:
+      return "NOT OWNED"
+
+    return "SUCCESS"
+
   def handle_all_buy(self, property_name):
     # Get current property price
     property_values = self.proprty_data['property_name']
     property_cost = property_values['cost']
+
+    # Check if it can be bought
+    result = self.check_buy_requirements(property_name = property_name, price = property_cost)
+
+    expected_results = ["SHAMBLES", "ALREADY PURCHASED", "NO FUNDS"]
+    if result in expected_results: return result
 
     # Remove Money
     self.money = self.money - property_cost
@@ -79,11 +110,17 @@ class DataHandler:
 
     # Save changes
     self.save()
+
+    return "SUCCESS"
   
   def handle_all_sell(self, property_name):
     # Get current property price
     property_values = self.proprty_data['property_name']
     property_cost = property_values['cost']
+
+    # Check Sell Requirements
+    result = self.check_sell_requirements(property_name=property_name)
+    if result == "NOT OWNED": return result
 
     # Add Money
     self.money = self.money + property_cost
@@ -93,3 +130,5 @@ class DataHandler:
 
     # Save changes
     self.save()
+
+    return "SUCCESS"
