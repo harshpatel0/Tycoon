@@ -109,7 +109,10 @@ class UserInterface:
     name, empire_name, money, property_count = None, None, None, None
 
     def __init__(self) -> None:
+      screen.clear()
       self.init_data()
+      self.render()
+      self.handle_keypress()
 
     def init_data(self):
       self.name = datahandler.name
@@ -161,7 +164,23 @@ class UserInterface:
     pass
 
   class PropertyMarket:
-    pass
+    money, property_count = None, None
+
+    def __init__(self) -> None:
+      screen.clear()
+      self.init_data()
+      self.render()
+      # self.handle_keypress()
+
+    def init_data(self):
+      self.money = datahandler.money
+      self.property_count = datahandler.property_count
+    
+    def render(self):
+      # y,x 
+      screen.addstr(0,0, "[B]ack\t\tProperty Market")        
+      screen.addstr(1,0, "---------------------------------")
+      # Deal with this later
 
   class GameHelp:
     pass
