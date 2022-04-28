@@ -2,19 +2,14 @@ from fastapi import FastAPI, Header, Response
 from api import API
 from keyhandler import Keys
 
+# To edit the property data go to the property_data.py file
+from property_data import property_data as properties
+
 # We might need to migrate to Flask instead of FastAPI
 # Cuz I can't get this shit to work
 
-properties = {
-
-  'Test Joint': {
-    'dailyExpenses': 9999,
-    'dailyProfit': 99999,
-    'cost': 999999,
-    'location': 'Test',
-    'set': 'Test'
-  }
-}
+# Property data is now stored in the properties class inside the properties file
+print(properties)
 
 def keys():
   global key
