@@ -1,7 +1,9 @@
+import re
 import cryptography
-import requesthandler
 from cryptography.fernet import Fernet
+from . import requesthandler
 
+# requesthandler = requesthandler.RequestHandler()
 requesthandler = requesthandler.RequestHandler()
 
 # Please note that anything to do with changes during gameplay is handled
@@ -11,11 +13,14 @@ requesthandler = requesthandler.RequestHandler()
 
 class DataHandler:
 
-  key = requesthandler.get_decryption_key()
-
   save_data = None
   property_data = None
-  cryptographyhandler = Fernet(key)
+  key, cryptographyhandler = None, None
+
+  # This function is used because you first need to connect to the server to receive the data
+  def fill_decryption_key_field(self):
+    self.key = requesthandler.get_decryption_key()
+    self.cryptographyhandler = Fernet(self.key)
 
   def fill_arguments(self, server_url, username, data = None):
     requesthandler.server_url = server_url

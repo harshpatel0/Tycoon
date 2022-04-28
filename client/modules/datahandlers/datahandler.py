@@ -1,5 +1,4 @@
-import backendhandler
-
+from . import backendhandler
 backendhandler = backendhandler.DataHandler()
 
 # Please note that anything to do with changes during gameplay is handled
@@ -16,9 +15,10 @@ class DataHandler:
 
   name, empire_name = None, None 
   money, properties, property_count = None, None, None
-
-  def initialize(self, save_file):
-    self.save_data = save_file
+  property_data = None
+  
+  def fill_property_data(self):
+    self.properties = backendhandler.get_property_data()
 
   def save_file_parser(self):
     self.name = self.save_data['name']

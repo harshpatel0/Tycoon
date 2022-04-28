@@ -86,8 +86,7 @@ class RequestHandler:
 
   def get_decryption_key(self):
     key_request = self.query_data("api/server/key")
-
-    decoded_key = key_request.text
+    decoded_key = key_request
 
     if decoded_key == "NO_CONNECTION":
       return None
@@ -102,8 +101,8 @@ class RequestHandler:
     
   def get_property_data(self):
     request = self.query_data('/api/properties')
-    if request.text == "NO_CONNECTION": return "NO_CONNECTION"
-    return request.text
+    if request == "NO_CONNECTION": return "NO_CONNECTION"
+    return request
     
   def get_server_version(self):
     request = self.query_data('/api/server/server-version')
