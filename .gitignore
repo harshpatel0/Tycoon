@@ -40,3 +40,7 @@ client/modules/datahandlers/__pycache__/backendhandler.cpython-39.pyc
 client/modules/datahandlers/__pycache__/datahandler.cpython-39.pyc
 client/modules/datahandlers/__pycache__/requesthandler.cpython-39.pyc
 client/modules/datahandlers/__pycache__/usernamehandler.cpython-39.pyc
+client/backendhandler.log
+requesthandler.log
+server/mainserver.log
+client/main.log
