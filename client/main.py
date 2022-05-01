@@ -1,9 +1,15 @@
+print("Loading Files")
 import curses
 from time import sleep
 from sys import exit
+import logging
+
+logging.basicConfig(filename="main.log", format="%(asctime)s %(message)s", filemode="w")
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+
 # # Import all Data Handlers
 # import modules.datahandlers
-
 import modules.datahandlers.backendhandler
 import modules.datahandlers.datahandler
 import modules.datahandlers.requesthandler
@@ -12,6 +18,7 @@ import modules.datahandlers.usernamehandler
 import modules.uielements.textboxes
 # # Import all UI elements
 # import modules.uielements
+
 
 client_version = 0.01
 
@@ -22,6 +29,7 @@ client_version = 0.01
 requesthandler = modules.datahandlers.requesthandler.RequestHandler()
 datahandler = modules.datahandlers.datahandler.DataHandler()
 usernamehandler = modules.datahandlers.usernamehandler.UsernameHandler()
+backendhandler = modules.datahandlers.backendhandler.DataHandler()
 
 global screen
 screen = curses.initscr()
@@ -29,6 +37,69 @@ screen = curses.initscr()
 # Server Data 
 server_version = None
 server_name = None
+
+# Game Settings
+# These don't work and soon they will be moved to another file
+dont_show_button_prompts = False
+auto_connect_to_server_ip = "example.com"
+disable_logging = False
+
+# Debug Switches
+skip_ip = True
+skip_new_save_file_message = True
+skip_name_when_creating_new_save_files = True
+skip_empire_name_when_creating_new_save_files = True
+
+
+# Debug Options
+debug_use_ip = "192.168.0.202:8000"
+debug_create_save_file_with_name = "Test"
+debug_create_save_file_with_empire_name = "Test"
+
+
+# Global Functions
+
+def quit_app():
+  curses.endwin()
+  exit()
+
+def create_new_save_file_wizard():
+  if not skip_new_save_file_message:
+    screen.clear()
+    screen.addstr(0,0, "Create a new save file")
+    screen.addstr(1,0, "----------------------")
+    screen.addstr(2,0, "You don't have a save file on this server so we will need to create")
+    screen.addstr(3,0, "a new one, you will be asked to input the name of your character")
+    screen.addstr(4,0, "and what you want to call your company, press any key to continue")
+    screen.refresh()
+
+    screen.get_wch()
+
+  screen.clear()
+  textbox = modules.uielements.textboxes.AlphaNumericTextBox(screen=screen)
+  if not skip_name_when_creating_new_save_files:
+    name = textbox.create_textbox("Your Name", (1,1), 16)
+  else:
+    name = debug_create_save_file_with_name
+  if not skip_empire_name_when_creating_new_save_files:
+    empire_name = textbox.create_textbox("Your Empire Name", (1,1), 16)
+  else:
+    empire_name = debug_create_save_file_with_empire_name
+
+  if name == "QUIT" or empire_name == "QUIT":
+    screen.clear()
+    screen.addstr(0,0, "Error")
+    screen.addstr(1,0, "-----")
+    screen.addstr(2,0, "You cannot have a blank name or empire name, do you want to try again?")
+    screen.addstr(3,0, "Press any key to retry")
+
+    screen.get_wch()
+
+    create_new_save_file_wizard()
+
+  screen.clear()
+  backendhandler.generate_save_file(name = name, empire_name=empire_name)
+  return backendhandler.save_data
 
 class Main():
   def __init__(self) -> None:
@@ -38,15 +109,23 @@ class Main():
     screen.keypad(True)
   
   def connect_to_server(self):
-    ipaddress_textbox = modules.uielements.textboxes.AddressTextBox(screen=screen)
+    if not skip_ip:
+      ipaddress_textbox = modules.uielements.textboxes.AddressTextBox(screen=screen)
 
-    ipaddress = ipaddress_textbox.create_textbox("Server Address", (1,1), 19)
+      ipaddress = ipaddress_textbox.create_textbox("Server Address", (1,1), 19)
+      # screen.addstr(0,0,f"Function returned {ipaddress}")
+      screen.refresh()
+      if ipaddress == "QUIT":
+        quit_app()
+    else:
+      ipaddress = debug_use_ip
+
     screen.clear()    
     screen.addstr(1,2, f"Connecting to {ipaddress}")
     screen.refresh()
 
-    self.requesthandler.server_url = ipaddress
-    status = self.requesthandler.ping()
+    requesthandler.server_url = f"http://{ipaddress}"
+    status = requesthandler.ping()
 
     if status != "NO_CONNECTION":
       screen.clear()
@@ -63,58 +142,83 @@ class Main():
       keypress = screen.get_wch()
 
       if keypress == "r":
-        self.requesthandler.server_url = None
+        screen.clear()
+        requesthandler.server_url = None
         self.connect_to_server()
       else:
-        curses.endwin()
-        quit()
+        quit_app()
     
   def retrieve_server_data(self):
     screen.clear()
 
     screen.addstr(0,0, "Loading")
     screen.addstr(1,0, "-------")
-    screen.addstr(3,1, "Loading Save file")
     screen.refresh()
 
-    self.requesthandler.username = self.usernamehandler.get_username()
-    self.server_name = self.requesthandler.get_server_name()
-    self.server_version = self.requesthandler.get_server_version()
+    screen.addstr(3,1, "Getting Username (First run will take longer)")
+    screen.addstr(4,1, "[-     ]")
+    screen.refresh()
+
+    requesthandler.username = usernamehandler.get_username()
+    logger.debug(f'Username: {requesthandler.username}')
     
+    screen.addstr(3,1, "Initializing Datahandlers (1/2)\t\t\t\t\t\t")
+    screen.addstr(4,1, "[--    ]")
+    screen.refresh()
+    backendhandler.fill_arguments(server_url = requesthandler.server_url, username=requesthandler.username)
+    backendhandler.fill_decryption_key_field()
+    logger.debug(f'Backend Handler Filled Arguments: Server URL: {requesthandler.server_url}, Username: {requesthandler.username}\nDecryption Key: {backendhandler.key}, Cryptography Handler: {backendhandler.cryptographyhandler}')
+  
+    screen.addstr(3,1, "Initializing Datahandlers (2/2)\t\t\t")
+    screen.addstr(4,1, "[---   ]")
+    screen.refresh()
+    datahandler.fill_property_data()
+    logger.debug(f'Loading Stage 3: Called fill property data, property data={datahandler.properties}')
+
+
+    screen.addstr(3,1, "Loading Save File\t\t\t\t")
+    screen.addstr(4,1, "[----  ]")
+    screen.refresh()
+    logger.debug(f'Loading Stage 4: Parsing Save file')
+    save_data = backendhandler.get_save_file()
+
+    if save_data == "GENERATE":
+      logger.warning("User doesn't have a save file on this server, creating new one")
+      datahandler.save_data = create_new_save_file_wizard()
+    else:
+      datahandler.save_data = save_data
+
+    datahandler.save_file_parser()
+    
+    screen.addstr(3,1, "Gathering Information (1/2)\t\t\t")
+    screen.addstr(4,1, "[----- ]")
+    screen.refresh()
+    server_name = requesthandler.get_server_name()
+    
+    screen.addstr(3,1, "Gathering Information (2/2)")
+    screen.addstr(4,1, "[------]")
+    screen.refresh()
+    server_version = requesthandler.get_server_version()
+
     # encrypted_save = self.requesthandler.cloudsave_get()
     # encrypted_save = encrypted_save.encode()
 
     # Handled by datahandler.get_save_file() function
 
-    if self.datahandler.get_save_file() != "INCORRECT KEY":
-      screen.addstr(3, 1, "Loading Property Data")
-      screen.refresh()
+    logger.info(f"Connected to {server_name} on version {server_version} on IP Address {requesthandler.server_url}")
 
-      self.datahandler.get_property_data()
-      screen.addstr(3,1, "Loading Game")
-      screen.refresh()
+    backendhandler.get_property_data()
 
-      UserInterface()
-    
-    screen.addstr(0, 0, "Loading Failed")
-    screen.addstr(1, 0, "--------------")
-    screen.addstr(3, 1, "The save file couldn't be decrypted by the key from the")
-    screen.addstr(4, 1, "server, the key might have changed, unfortunately there")
-    screen.addstr(5, 1, "is no way to get your previous save file back unless the")
-    screen.addstr(6, 1, "old key is backed up, contact the server host for help.")
-    screen.addstr(8, 1, "The game can not be launched, quit the game by pressing q")
-
+    logger.debug(f"Property Data: {backendhandler.property_data}")
+    screen.addstr(3,1, "Loading Game")
     screen.refresh()
 
-    while screen.get_wch() != "q":
-      pass
-    exit()
-
-      
-  
+    logger.debug("Loading User Interface")
+    UserInterface()
+    
 class UserInterface:
   def __init__(self) -> None:
-    self.Dashboard
+    self.Dashboard()
   
   class Dashboard:
     name, empire_name, money, property_count = None, None, None, None
@@ -137,25 +241,28 @@ class UserInterface:
       screen.clear()
       screen.addstr(0, 0, f"{self.empire_name} Dashboard")
       screen.addstr(1, 0, f"Welcome back {self.name}")
+
+      # Render Row Titles
       screen.addstr(4, 0, "Business Statistics")
+      screen.addstr(4, 25, "Property Management")
+
+      screen.addstr(5,0, "-"*90)
 
       # Renders the business statistics
 
       # y, x
-      screen.addstr(5, 2, f"Capital: {self.money}")
-      screen.addstr(6, 2, f"Properties: {self.property_count}")
+      screen.addstr(6, 2, f"Capital: {self.money}")
+      screen.addstr(7, 2, f"Properties: {self.property_count}")
 
 
       # Renders property options
 
-      screen.addstr(4, 6, "Property Portfolio Management")
-      screen.addstr(5, 6, "View [p]roperty Portfolio")
-      screen.addstr(6, 6, "Visit the property [m]arket")
+      screen.addstr(6, 25, "View [p]roperty Portfolio")
+      screen.addstr(7, 25, "Visit the property [m]arket")
 
       # Renders other options
 
-      screen.addstr(9, 0, "[H]elp")
-      screen.addstr(9, 8, "[E]dit Business Documents")
+      screen.addstr(9, 0, "[H]elp\t[E]dit Business Documents\t[Q]uit")
 
       screen.refresh()
     
@@ -170,6 +277,10 @@ class UserInterface:
         UserInterface.GameHelp
       if key_press == 'e':
         UserInterface.BusinessIdentityManagement
+      if key_press == 'q':
+        UserInterface.BusinessIdentityManagement
+      else:
+        self.__init__()
   
   class PropertyPortfolio:
     pass
@@ -277,6 +388,7 @@ class UserInterface:
 def main():
   main = Main()
   main.connect_to_server()
+  main.retrieve_server_data()
 
 if __name__ == '__main__':
   main()

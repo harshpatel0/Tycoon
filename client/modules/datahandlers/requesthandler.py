@@ -1,5 +1,11 @@
 import requests
+import os
 
+import logging
+
+logging.basicConfig(filename="requesthandler.log", format="%(asctime)s %(message)s", filemode='w+')
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
 class RequestHandler:
 
   server_url = ""
@@ -14,18 +20,18 @@ class RequestHandler:
       return "NO_CONNECTION"
     
   def query_data(self, query):
-    try:
-      response = requests.request("GET", f'{self.server_url}/{query}')
-
-      return response
-    except Exception:
-      return "NO_CONNECTION"
+    # try:
+    logger.debug(f"Server URL: {self.server_url}")
+    response = requests.request("GET", f'{self.server_url}/{query}')
+    return response
+    # except Exception:
+    #   return "NO_CONNECTION"
     
   def cloudsave_creator_deletor(self, request, username):
 
     headers = {"username": username}
     try:
-      response = requests.request("{request}", f'{self.server_url}/api/cloudsaves', headers=headers)
+      response = requests.request("{request}", f'{self.server_url}api/cloudsaves', headers=headers)
     except Exception:
       return "NO_CONNECTION"
 
@@ -39,11 +45,15 @@ class RequestHandler:
   
   def cloudsave_get(self):
 
-    res = self.cloudsave_creator_deletor("GET", self.username)
-    if res == "NO_CONNECTION": return "NO_CONNECTION"
-    if res.status_code == 404: return "NOT_EXISTS"
-    res = res.text.replace("\"", '')
-    return res
+    # res = self.cloudsave_creator_deletor("GET", self.username)
+
+    headers = {"username": self.username}
+
+    response = requests.request('GET', f'{self.server_url}/api/cloudsaves/', headers=headers)
+
+    if response.status_code == 404: return "NOT_EXISTS"
+    response = response.text.replace("\"", '')
+    return response
   
   def update_cloudsaves(self):
     headers = {
@@ -52,7 +62,7 @@ class RequestHandler:
     }
 
     try:
-      response = requests.request("PATCH", f'{self.server_url}/api/cloudsaves', headers=headers)
+      response = requests.request("PATCH", f'{self.server_url}api/cloudsaves', headers=headers)
       
       if response.status_code == 404:
         return "NOT_EXISTS"
@@ -66,45 +76,46 @@ class RequestHandler:
     "username": self.username,
     "data": self.data
     }
-    try:
-      response = requests.request("PUT", f'{self.server_url}/api/cloudsaves', headers=headers)
-      return None
-    except Exception:
-      return "NO_CONNECTION"
-    
+
+    logger.debug(f"Headers sent to the server: {headers}")
+    response = requests.request("PUT", f'{self.server_url}/api/cloudsaves/', headers=headers)
+    return None
+
   def update_cloudsaves(self):
     headers = {
     "username": self.username,
     "data": self.data
     }
     try:
-      response = requests.request("PATCH", f'{self.server_url}/api/cloudsaves', headers=headers)
+      response = requests.request("PATCH", f'{self.server_url}/api/cloudsaves/', headers=headers)
       if response.status_code == 404:
         return "NO_SAVE"
     except Exception:
       return "NO_CONNECTION"
 
   def get_decryption_key(self):
+    logger.debug("Asked to get decryption key")
     key_request = self.query_data("api/server/key")
-    decoded_key = key_request
-
-    if decoded_key == "NO_CONNECTION":
+    key_request = key_request.text
+    logger.debug(f"Decryption key from server: {key_request} ")
+  
+    if key_request == "NO_CONNECTION":
       return None
 
-    decoded_key = decoded_key.replace("\"", "")
-    return decoded_key.encode()
+    key_request = key_request.replace("\"", "")
+    return key_request.encode()
     
   def get_server_name(self):
-    request = self.query_data('/api/server/name')
+    request = self.query_data('api/server/name')
     if request.text == "NO_CONNECTION": return "NO_CONNECTION"
     return request.text
     
   def get_property_data(self):
-    request = self.query_data('/api/properties')
+    request = self.query_data('api/properties')
     if request == "NO_CONNECTION": return "NO_CONNECTION"
-    return request
+    return request.text
     
   def get_server_version(self):
-    request = self.query_data('/api/server/server-version')
+    request = self.query_data('api/server/server-version')
     if request.text == "NO_CONNECTION": return "NO_CONNECTION"
     return float(request.text)

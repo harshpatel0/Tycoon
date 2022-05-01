@@ -2,14 +2,17 @@ from fastapi import FastAPI, Header, Response
 from api import API
 from keyhandler import Keys
 
-# To edit the property data go to the property_data.py file
-from property_data import property_data as properties
+import logging
+logging.basicConfig(filename="mainserver.log", format='%(asctime)s %(message)s', filemode="w")
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
+# To edit the property data go to the property_data.py file
+from property_data import property_data
 # We might need to migrate to Flask instead of FastAPI
 # Cuz I can't get this shit to work
 
 # Property data is now stored in the properties class inside the properties file
-print(properties)
 
 def keys():
   global key
@@ -31,16 +34,18 @@ api = API()
 # Initalize API
 
 api.name = "businessapi"
-api.properties = properties
+api.properties = property_data 
 api.server_version = 0.01
 
 class Server:
   @app.get("/", status_code = 204)
   def root():
+    logger.info("Got a ping request")
     api.respond("ping")
 
   @app.get("/api/properties")
   def return_props():
+    logger.info("Sending property info")
     return api.respond("properties")
 
   @app.get("/api/server/name")
@@ -57,7 +62,7 @@ class Server:
   to be used as a key to decrypt
   """
   @app.get("/api/server/key")
-  def server_version():
+  def send_key():
     return key
 
   # Cloudsave Handler

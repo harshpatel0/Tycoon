@@ -1,4 +1,6 @@
 from . import backendhandler
+import logging
+
 backendhandler = backendhandler.DataHandler()
 
 # Please note that anything to do with changes during gameplay is handled

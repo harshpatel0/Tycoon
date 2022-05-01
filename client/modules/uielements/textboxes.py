@@ -1,4 +1,5 @@
 import curses
+import logging
 
 class TextBoxCore():
   screen = None
@@ -7,6 +8,7 @@ class TextBoxCore():
   
   backspace_key = 449
   accept_key = 451
+  quit_key = 457
 
   text = ""
 
@@ -18,7 +20,7 @@ class TextBoxCore():
     screen.keypad(True)
 
 
-  def create_textbox(self, title, position, max_chars, clear_screen = False, button_prompts = True):
+  def create_textbox(self, title, position, max_chars, clear_screen = True, button_prompts = True):
     if clear_screen:
       self.screen.clear()
 
@@ -28,7 +30,9 @@ class TextBoxCore():
     positon_y = position[1]
 
     self.screen.addstr(positon_y, positon_x, title+": "+"_"*max_chars)
-    self.screen.addstr(position[1]+1, positon_x, "Backspace: Num7, Accept: Num9")
+
+    if button_prompts:
+      self.screen.addstr(position[1]+1, positon_x, "Backspace: Num7\tAccept: Num9\tQuit: Num3")
 
     # Finding the TextArea start position
 
@@ -36,7 +40,12 @@ class TextBoxCore():
 
     self.handle_textbox(text_area_pos, position[1], max_chars)
 
+    # self.screen.addstr(6,0,f"TEXTBOX: {self.text}")
     text = self.text
+
+    # print(text)
+    # self.screen.addstr(7,0,f"TEXTBOX2: {text}")
+
     self.text = ""
     return text
   
@@ -71,6 +80,10 @@ class TextBoxCore():
       if len(self.text) == 0: return None
       self.finalise()
       return "DONE"
+    
+    if key_press == self.quit_key:
+      self.text = "QUIT"
+      return "QUIT"
   
   def display_new_text(self, text_area_pos, position_y):
     self.screen.addstr(position_y, text_area_pos, self.text)
@@ -78,8 +91,10 @@ class TextBoxCore():
   
   def handle_textbox(self, text_area_pos, position_y, max_chars):
     while True:
-      opcode = self.handle_inputs(max_chars, position_y, text_area_pos)
-      if opcode == "DONE":
+      txtbox_output = self.handle_inputs(max_chars, position_y, text_area_pos)
+      if txtbox_output == "QUIT":
+        return self.text
+      if txtbox_output == "DONE":
         return self.text
       self.display_new_text(text_area_pos, position_y)
     

@@ -3,13 +3,15 @@ import os
 import subprocess
 import random
 
+import logging
+
 class GenerateSeed():
 
   seed = 0
 
   def get_installed_apps(self):
     
-    installed_apps_fullnames = subprocess.check_output([f"{os.getcwd()}\\client\\dependencies\\wmic.exe", "product", "get", "name"]).decode()
+    installed_apps_fullnames = subprocess.check_output([f"{os.getcwd()}\\dependencies\\wmic.exe", "product", "get", "name"]).decode()
     # SHIPPING installed_apps_fullnames = subprocess.check_output([f"{os.getcwd()}\\wmic.exe", "product", "get", "name"])
 
     installed_apps_fullnames = installed_apps_fullnames.replace('Name', '')
@@ -18,7 +20,7 @@ class GenerateSeed():
     return len(installed_apps_fullnames)
   
   def get_logical_processor_count(self):
-    logical_processors = subprocess.check_output([f"{os.getcwd()}\\client\\dependencies\\wmic.exe", "computersystem", "get", "NumberOfLogicalProcessors"]).decode()
+    logical_processors = subprocess.check_output([f"{os.getcwd()}\\dependencies\\wmic.exe", "computersystem", "get", "NumberOfLogicalProcessors"]).decode()
 
     logical_processors = logical_processors.replace('NumberOfLogicalProcessors', '')
     logical_processors = logical_processors.replace('\r', '')
@@ -26,7 +28,7 @@ class GenerateSeed():
     return int(logical_processors) / 4
 
   def get_pids(self):
-    unprocessed_pids = subprocess.check_output([f"{os.getcwd()}\\client\\dependencies\\wmic.exe", "process", "get", "ProcessID"]).decode()
+    unprocessed_pids = subprocess.check_output([f"{os.getcwd()}\\dependencies\\wmic.exe", "process", "get", "ProcessID"]).decode()
     unprocessed_pids = unprocessed_pids.replace('\r', '')
     unprocessed_pids = unprocessed_pids.replace('ProcessId', '')
 
