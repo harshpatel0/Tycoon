@@ -6,6 +6,7 @@ import logging
 logging.basicConfig(filename="requesthandler.log", format="%(asctime)s %(message)s", filemode='w+')
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
+
 class RequestHandler:
 
   server_url = ""

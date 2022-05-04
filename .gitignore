@@ -44,3 +44,5 @@ client/backendhandler.log
 requesthandler.log
 server/mainserver.log
 client/main.log
+client/username.dat.bak
+debugsave/debugsave.py

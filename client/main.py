@@ -52,9 +52,10 @@ skip_empire_name_when_creating_new_save_files = True
 
 
 # Debug Options
-debug_use_ip = "192.168.0.202:8000"
+debug_use_ip = "192.168.0.104:8000"
 debug_create_save_file_with_name = "Test"
 debug_create_save_file_with_empire_name = "Test"
+debug_ignore_settings_file = False # Unused
 
 
 # Global Functions
@@ -262,7 +263,8 @@ class UserInterface:
 
       # Renders other options
 
-      screen.addstr(9, 0, "[H]elp\t[E]dit Business Documents\t[Q]uit")
+      if not dont_show_button_prompts:
+        screen.addstr(9, 0, "[H]elp\t[E]dit Business Documents\t[Q]uit")
 
       screen.refresh()
     

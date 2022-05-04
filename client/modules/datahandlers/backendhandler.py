@@ -4,6 +4,8 @@ from cryptography.fernet import Fernet
 from . import requesthandler
 import logging
 
+# Used to convert strings to dictionaries
+import json
                   
 # Intialize Logger
 logging.basicConfig(filename="backendhandler.log", format='%(asctime)s %(message)s', filemode='w')
@@ -49,9 +51,22 @@ class DataHandler:
   
     try:
       self.save_data = self.cryptographyhandler.decrypt(encrypted_save_file)
+      logger.debug(f"Decrypted save file: {self.save_data}")
+
     except cryptography.fernet.InvalidToken:
       return "INCORRECT KEY"
-    return dict(self.save_data)
+    
+    # Try to decode the save file before returning it as a dictionary
+    self.save_data = self.save_data.decode()
+    logger.debug(f"Decrypted save file: {self.save_data}")
+    
+    self.save_data = self.save_data.replace('\'', '\"')
+    logger.debug(f"After double quotting: {self.save_data}")
+
+    self.save_data = json.loads(self.save_data)
+    logger.debug(f"JSON Module Output of Save File: {self.save_data}")
+
+    return self.save_data
   
   def encrypt_save_file(self):
     logger.debug(f"Save file: {self.save_data}")
@@ -75,7 +90,12 @@ class DataHandler:
       return "GENERATE"
       # self.generate_save_file()
     else:
-      if self.decrypt_encrypted_save(request_to_server.encode()) == "INCORRECT KEY":
+      logger.debug(f"Save File From Server: {request_to_server}")
+      encoded_request = request_to_server.encode()
+      logger.debug(f"Encoded Save File: {encoded_request}")
+
+
+      if self.decrypt_encrypted_save(encoded_request) == "INCORRECT KEY":
         return "INCORRECT KEY"
       return self.save_data
   
