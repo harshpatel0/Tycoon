@@ -32,3 +32,5 @@
 # Remaining Issues
 ## Save File Issues
 - The app cannot parse save files from the server after being decrypted
+
+***This issue is now fixed, see BugFix1.5.md***
