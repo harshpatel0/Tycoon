@@ -11,7 +11,7 @@ backendhandler = backendhandler.DataHandler()
 class DataHandler:
 
   save_data = backendhandler.save_data
-  proprty_data = backendhandler.property_data
+  property_data = backendhandler.property_data
 
   # Parsed Save file Data goes here
 
@@ -20,7 +20,7 @@ class DataHandler:
   property_data = None
   
   def fill_property_data(self):
-    self.properties = backendhandler.get_property_data()
+    self.property_data = backendhandler.get_property_data()
 
   def save_file_parser(self):
     self.name = self.save_data['name']

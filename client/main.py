@@ -1,8 +1,9 @@
 print("Loading Files")
 import curses
-from time import sleep
 from sys import exit
 import logging
+
+# from time import sleep
 
 logging.basicConfig(filename="main.log", format="%(asctime)s %(message)s", filemode="w")
 logger = logging.getLogger()
@@ -19,7 +20,6 @@ import modules.uielements.textboxes
 # # Import all UI elements
 # import modules.uielements
 
-
 client_version = 0.01
 
 # requesthandler = modules.datahandlers.requesthandler.RequestHandler()
@@ -31,7 +31,6 @@ datahandler = modules.datahandlers.datahandler.DataHandler()
 usernamehandler = modules.datahandlers.usernamehandler.UsernameHandler()
 backendhandler = modules.datahandlers.backendhandler.DataHandler()
 
-global screen
 screen = curses.initscr()
 
 # Server Data 
@@ -45,17 +44,18 @@ auto_connect_to_server_ip = "example.com"
 disable_logging = False
 
 # Debug Switches
-skip_ip = True
-skip_new_save_file_message = True
-skip_name_when_creating_new_save_files = True
-skip_empire_name_when_creating_new_save_files = True
+debug_skip_ip = True
+debug_skip_new_save_file_message = True
+debug_skip_name_when_creating_new_save_files = True
+debug_skip_empire_name_when_creating_new_save_files = True
+debug_enable_wip_features = True
+debug_ignore_settings_file = False # Unused
 
 
 # Debug Options
 debug_use_ip = "192.168.0.104:8000"
 debug_create_save_file_with_name = "Test"
 debug_create_save_file_with_empire_name = "Test"
-debug_ignore_settings_file = False # Unused
 
 
 # Global Functions
@@ -65,7 +65,7 @@ def quit_app():
   exit()
 
 def create_new_save_file_wizard():
-  if not skip_new_save_file_message:
+  if not debug_skip_new_save_file_message:
     screen.clear()
     screen.addstr(0,0, "Create a new save file")
     screen.addstr(1,0, "----------------------")
@@ -78,11 +78,11 @@ def create_new_save_file_wizard():
 
   screen.clear()
   textbox = modules.uielements.textboxes.AlphaNumericTextBox(screen=screen)
-  if not skip_name_when_creating_new_save_files:
+  if not debug_skip_name_when_creating_new_save_files:
     name = textbox.create_textbox("Your Name", (1,1), 16)
   else:
     name = debug_create_save_file_with_name
-  if not skip_empire_name_when_creating_new_save_files:
+  if not debug_skip_empire_name_when_creating_new_save_files:
     empire_name = textbox.create_textbox("Your Empire Name", (1,1), 16)
   else:
     empire_name = debug_create_save_file_with_empire_name
@@ -92,9 +92,12 @@ def create_new_save_file_wizard():
     screen.addstr(0,0, "Error")
     screen.addstr(1,0, "-----")
     screen.addstr(2,0, "You cannot have a blank name or empire name, do you want to try again?")
-    screen.addstr(3,0, "Press any key to retry")
+    screen.addstr(3,0, "Press any key to retry or press q to quit app")
 
-    screen.get_wch()
+    keypress = screen.get_wch()
+
+    if keypress == "q":
+      exit()
 
     create_new_save_file_wizard()
 
@@ -110,7 +113,7 @@ class Main():
     screen.keypad(True)
   
   def connect_to_server(self):
-    if not skip_ip:
+    if not debug_skip_ip:
       ipaddress_textbox = modules.uielements.textboxes.AddressTextBox(screen=screen)
 
       ipaddress = ipaddress_textbox.create_textbox("Server Address", (1,1), 19)
@@ -174,7 +177,7 @@ class Main():
     screen.addstr(4,1, "[---   ]")
     screen.refresh()
     datahandler.fill_property_data()
-    logger.debug(f'Loading Stage 3: Called fill property data, property data={datahandler.properties}')
+    logger.debug(f'Loading Stage 3: Called fill property data, property data={datahandler.property_data}')
 
 
     screen.addstr(3,1, "Loading Save File\t\t\t\t")
@@ -272,15 +275,21 @@ class UserInterface:
       key_press = screen.get_wch()
 
       if key_press == 'p':
-        UserInterface.PropertyPortfolio
+        logger.info("Loading Property Portfolio")
+        UserInterface.PropertyPortfolio()
       if key_press == 'm':
-        UserInterface.PropertyMarket
+        logger.info("Loading Property Market")
+        UserInterface.PropertyMarket()
       if key_press == 'h':
-        UserInterface.GameHelp
+        logger.info("Loading Game Help")
+        UserInterface.GameHelp()
       if key_press == 'e':
-        UserInterface.BusinessIdentityManagement
+        logger.info("Loading Business Identity Management")
+        UserInterface.BusinessIdentityManagement()
       if key_press == 'q':
-        UserInterface.BusinessIdentityManagement
+        logger.info("Quitting app")
+        datahandler.save()
+        exit()
       else:
         self.__init__()
   
@@ -294,12 +303,17 @@ class UserInterface:
     page = 0
   
     # Property Data
-    properties = datahandler.property_data
+    properties = {}
 
     def __init__(self) -> None:
       screen.clear()
       self.init_data()
       # self.render() # Special case
+      logger.debug(f"Property Market Variables: Money: {self.money} Page: {self.page} Properties: {self.properties}")
+      logger.debug(f'Property Data in DataHandler() {datahandler.property_data}')
+
+      self.properties = datahandler.property_data
+
       self.data_gatherer()
       # self.handle_keypress() # Handled in render funcyion
 

@@ -45,10 +45,20 @@ class DataHandler:
   #   save_file = requesthandler.cloudsave_get()
   #   return save_file
 
-  def decrypt_encrypted_save(self, encrypted_save_file):
+  def convert_to_dictionary(self, data, name_of_data = None):
+    # name_of_data is used for logging
+    logger.debug(f"Inital data before converting to dictionary: {data}, Name of data: {name_of_data}")
     
+    data = data.replace('\'', '\"')
+    logger.debug(f"After double quotting: {data}, Name of data: {name_of_data}")
+
+    data = json.loads(data)
+    logger.debug(f"JSON Module Output of Save File: {data}, Name of data: {name_of_data}")
+
+    return data
+
+  def decrypt_encrypted_save(self, encrypted_save_file):
     # encrypted_save_file = self.get_save_file()
-  
     try:
       self.save_data = self.cryptographyhandler.decrypt(encrypted_save_file)
       logger.debug(f"Decrypted save file: {self.save_data}")
@@ -58,13 +68,7 @@ class DataHandler:
     
     # Try to decode the save file before returning it as a dictionary
     self.save_data = self.save_data.decode()
-    logger.debug(f"Decrypted save file: {self.save_data}")
-    
-    self.save_data = self.save_data.replace('\'', '\"')
-    logger.debug(f"After double quotting: {self.save_data}")
-
-    self.save_data = json.loads(self.save_data)
-    logger.debug(f"JSON Module Output of Save File: {self.save_data}")
+    self.save_data = self.convert_to_dictionary(self.save_data, "Save File")
 
     return self.save_data
   
@@ -82,6 +86,9 @@ class DataHandler:
   def get_property_data(self):
     if self.property_data == None:
       self.property_data = requesthandler.get_property_data()
+    
+    # Needs to be made into a dictionary first
+    self.property_data = self.convert_to_dictionary(self.property_data, "Property Data")
     return self.property_data
   
   def get_save_file(self):
