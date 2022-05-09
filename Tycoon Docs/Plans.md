@@ -21,7 +21,7 @@ property data could be changed on the fly and the clients would reload it
 
 - Generate usernames on the server instead of the client
 
-  API Endpoint = `http://{server_url}/api/cloudsaves/generate_username/`
+  API Endpoint = `http://{server_url}/api/cloudsaves/generate_username/` -> String
 
 ## Low Priority (For Now)
 - Either make a client using Python Eel or a UI Library like Tkinter or PyQt5
