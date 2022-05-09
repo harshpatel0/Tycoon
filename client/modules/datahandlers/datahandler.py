@@ -8,10 +8,17 @@ backendhandler = backendhandler.DataHandler()
 # The DataHandler (now backendhandler) module deals with the backend.
 # Please do remember that before creating useless functions
 
+# Intialize Logger
+# logging.basicConfig(filename="backendhandler.log", format='%(asctime)s %(message)s', filemode='w')
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+
 class DataHandler:
 
-  save_data = backendhandler.save_data
-  property_data = backendhandler.property_data
+  save_data = None
+  property_data = None
+
+  cryptographyhander = None
 
   # Parsed Save file Data goes here
 
@@ -29,10 +36,13 @@ class DataHandler:
     self.properties = self.save_data['properties']
     self.property_count = len(self.properties)
 
-  def save(self):
-    def upload(self):
+  def save(self, cryptographyhandler):
+    def upload():
       backendhandler.save_data = self.save_data
-      backendhandler.upload_savefile(backendhandler.encrypt_save_file(self.save_data))
+      # backendhandler.upload_savefile(backendhandler.encrypt_save_file(self.save_data))
+      encrypted_save_file = backendhandler.encrypt_save_file_for_saving(cryptographyhandler)
+      logger.debug(f"Encrypted save file to send: {encrypted_save_file}")
+      backendhandler.upload_savefile(encrypted_save_file)
 
     self.save_data['name'] = self.name
     self.save_data['empire-name'] = self.empire_name
@@ -70,7 +80,7 @@ class DataHandler:
 
   def check_buy_requirements(self, property_name, price):
 
-    temp_money = self.money - price
+    temp_money = int(self.money) - int(price)
 
     # This is a useless step, just for the fun of it
     if property_name in self.properties and temp_money < 0:
@@ -93,9 +103,9 @@ class DataHandler:
 
     return "SUCCESS"
 
-  def handle_all_buy(self, property_name):
+  def handle_all_sell(self, property_name):
     # Get current property price
-    property_values = self.proprty_data['property_name']
+    property_values = self.property_data[property_name]
     property_cost = property_values['cost']
 
     # Check if it can be bought
@@ -105,19 +115,20 @@ class DataHandler:
     if result in expected_results: return result
 
     # Remove Money
-    self.money = self.money - property_cost
+    self.money = int(self.money) - int(property_cost)
 
     # Add Property
     self.properties.append(property_name)
 
     # Save changes
-    self.save()
+    logger.debug(f"Cryptography Handler {self.cryptographyhander}")
+    self.save(self.cryptographyhander)
 
     return "SUCCESS"
   
   def handle_all_sell(self, property_name):
     # Get current property price
-    property_values = self.proprty_data['property_name']
+    property_values = self.property_data[property_name]
     property_cost = property_values['cost']
 
     # Check Sell Requirements
@@ -125,12 +136,13 @@ class DataHandler:
     if result == "NOT OWNED": return result
 
     # Add Money
-    self.money = self.money + property_cost
+    self.money = int(self.money) + int(property_cost)
 
     # Remove Property
     self.properties.remove(property_name)
 
     # Save changes
-    self.save()
+    logger.debug(f"Cryptography Handler {self.cryptographyhander}")
+    self.save(self.cryptographyhander)
 
     return "SUCCESS"

@@ -1,14 +1,12 @@
-import re
 import cryptography
 from cryptography.fernet import Fernet
+
+from modules.helpers.convert_to_dictionary import convert_to_dictionary
 from . import requesthandler
 import logging
-
-# Used to convert strings to dictionaries
-import json
                   
 # Intialize Logger
-logging.basicConfig(filename="backendhandler.log", format='%(asctime)s %(message)s', filemode='w')
+# logging.basicConfig(filename="converttodictionaryhelper.log", format='%(asctime)s %(message)s', filemode='w')
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
@@ -45,18 +43,6 @@ class DataHandler:
   #   save_file = requesthandler.cloudsave_get()
   #   return save_file
 
-  def convert_to_dictionary(self, data, name_of_data = None):
-    # name_of_data is used for logging
-    logger.debug(f"Inital data before converting to dictionary: {data}, Name of data: {name_of_data}")
-    
-    data = data.replace('\'', '\"')
-    logger.debug(f"After double quotting: {data}, Name of data: {name_of_data}")
-
-    data = json.loads(data)
-    logger.debug(f"JSON Module Output of Save File: {data}, Name of data: {name_of_data}")
-
-    return data
-
   def decrypt_encrypted_save(self, encrypted_save_file):
     # encrypted_save_file = self.get_save_file()
     try:
@@ -68,7 +54,7 @@ class DataHandler:
     
     # Try to decode the save file before returning it as a dictionary
     self.save_data = self.save_data.decode()
-    self.save_data = self.convert_to_dictionary(self.save_data, "Save File")
+    self.save_data = convert_to_dictionary(self.save_data, "Save File")
 
     return self.save_data
   
@@ -76,7 +62,21 @@ class DataHandler:
     logger.debug(f"Save file: {self.save_data}")
 
     # The save data first has to be encoded because of the cryptography module
+
+    logger.debug(f"Cryptography Handler: {self.cryptographyhandler}")
     encrypted_save_file = self.cryptographyhandler.encrypt(str(self.save_data).encode())
+    logger.debug(f"Encrypted Save File: {encrypted_save_file}")
+    return encrypted_save_file
+  
+  # Shit work around, but had to, will find better solution
+
+  def encrypt_save_file_for_saving(self, cryptographyhandler):
+    logger.debug(f"Save file: {self.save_data}")
+
+    # The save data first has to be encoded because of the cryptography module
+
+    logger.debug(f"Cryptography Handler: {cryptographyhandler}")
+    encrypted_save_file = cryptographyhandler.encrypt(str(self.save_data).encode())
     logger.debug(f"Encrypted Save File: {encrypted_save_file}")
     return encrypted_save_file
 
@@ -88,7 +88,7 @@ class DataHandler:
       self.property_data = requesthandler.get_property_data()
     
     # Needs to be made into a dictionary first
-    self.property_data = self.convert_to_dictionary(self.property_data, "Property Data")
+    self.property_data = convert_to_dictionary(self.property_data, "Property Data")
     return self.property_data
   
   def get_save_file(self):
@@ -110,6 +110,8 @@ class DataHandler:
     logger.info("Uploading save file to server")
     requesthandler.data = encrypted_save_file
     logger.debug(f"Request Handler > Data: {requesthandler.data}")
+
+    logger.debug(f"Cryptography Handler in Upload Save File: {self.cryptographyhandler}")
     requesthandler.upload_cloudsaves() 
     return None
   
