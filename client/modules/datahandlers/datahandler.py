@@ -103,7 +103,7 @@ class DataHandler:
 
     return "SUCCESS"
 
-  def handle_all_sell(self, property_name):
+  def handle_all_buy(self, property_name):
     # Get current property price
     property_values = self.property_data[property_name]
     property_cost = property_values['cost']

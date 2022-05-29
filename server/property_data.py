@@ -1,6 +1,6 @@
 # Property Data format
 # id - Now used as the name for the properties
-  # name - Depricated, you wouldn't want to have 2 properties with the same name anyway
+  # name - Depricated, you wouldn"t want to have 2 properties with the same name anyway
   # cost
   # location
   # set
@@ -11,20 +11,22 @@
 # Then paste it again below the one you copied from
 # Then make sure you change the first part before the colon as this is the property name and must be unique
 
-# NB: Make sure not to remove the single quotes and the property name can't be the same
+# NB: Make sure not to remove the single quotes and the property name can"t be the same
 
 property_data = {
-  'Test Joint': {
-    'cost': 999999,
-    'location': 'Test',
-    'set': 'Test'
+  'Oscars Kinyozi': {
+    'cost': 8800,
+    'location': 'South C',
+    'set': 'Starter',
+    'description': 'Dont cheat on this barber and get\nthe best fade the world has ever seen'
   },
 
   # Property Data for this property ends here
 
-  'Test Joint 2': {
-    'cost': 69420,
-    'location': 'A nice location',
-    'set': 'Nice Set'
-  }
+  'Appul': {
+    'cost': 2000,
+    'location': 'Definately the USA',
+    'set': 'Chinese Copy',
+    'description': 'Just like real apple son, it has\nA unlike your report card'
+  },
 }

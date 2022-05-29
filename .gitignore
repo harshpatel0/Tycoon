@@ -48,3 +48,7 @@ client/username.dat.bak
 debugsave/debugsave.py
 client/modules/helpers/__pycache__/convert_to_dictionary.cpython-39.pyc
 debugsave/converttodictionaryhelper.log
+server/property_data.py
+client/debug.dat
+.gitignore
+client/legit.dat

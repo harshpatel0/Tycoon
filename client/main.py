@@ -1,9 +1,8 @@
 print("Loading Files")
+
 import curses
 from sys import exit
 import logging
-
-from idna import valid_contextj
 
 # from time import sleep
 
@@ -46,7 +45,7 @@ auto_connect_to_server_ip = "example.com"
 disable_logging = False
 
 # Debug Switches
-debug_skip_ip = True
+debug_skip_ip = True 
 debug_skip_new_save_file_message = True
 debug_skip_name_when_creating_new_save_files = True
 debug_skip_empire_name_when_creating_new_save_files = True
@@ -55,7 +54,7 @@ debug_ignore_settings_file = False # Unused
 
 
 # Debug Options
-debug_use_ip = "192.168.0.105:8000"
+debug_use_ip = "127.0.0.1:8000"
 debug_create_save_file_with_name = "Test"
 debug_create_save_file_with_empire_name = "Test"
 
@@ -161,7 +160,7 @@ class Main():
     screen.addstr(1,0, "-------")
     screen.refresh()
 
-    screen.addstr(3,1, "Getting Username (First run will take longer)")
+    screen.addstr(3,1, "Generating Username")
     screen.addstr(4,1, "[-     ]")
     screen.refresh()
 
@@ -346,7 +345,7 @@ class UserInterface:
 
     def data_gatherer(self):
       if self.property_count == 0:
-        self.render_dialogs("NO PROPERTIES")
+        self.render_dialog("NO PROPERTIES")
         UserInterface.Dashboard()
 
       value_pairs = self.properties
@@ -355,7 +354,7 @@ class UserInterface:
       try:
         property_info_for_property = self.property_data[value_pairs[self.page]]
       except IndexError:
-        self.page = self.property_count
+        self.page = self.page - 1
         property_info_for_property = self.property_data[value_pairs[self.page]]
 
       logger.debug(f'Property Information for the Property {self.page} of owned properties {property_info_for_property}')
@@ -364,13 +363,18 @@ class UserInterface:
       location = property_info_for_property['location']
       cost = property_info_for_property['cost']
       set = property_info_for_property['set']
+      description = property_info_for_property['description']
 
       page = self.page + 1
       max_page = self.property_count
 
-      logger.debug(f'Name: {name}, Cost: {cost}, Location: {location}, Set: {set}, Max Page: {max_page}')
+      logger.debug(f'Name: {name}, Cost: {cost}, Location: {location}, Set: {set}, Max Page: {max_page}, Description: {description}')
 
-      self.render(page, name, cost, location, set, max_page)
+      details = []
+
+      details.extend([page, name, cost, location, set, description, max_page, page])
+
+      self.render(details)
       # UserInterface.Dashboard()
     
     def handle_selling(self, name):
@@ -379,15 +383,25 @@ class UserInterface:
       self.render_dialog(output_of_sell)
       return None
 
-    def render(self, page: int, name: str, selling_price: int, location: str, set: str, max_page: str):
+    def render(self, details):
+
+      name = details[1]
+      cost = details[2]
+      location = details[3]
+      set = details[4]
+      description = details[5]
+      max_page = details[6]
+      page = details[7]
+
       screen.clear()
                     # y,x 
       screen.addstr(0,0, f"[Q]uit\t\tProperty Market\t\tYou have TY$ {self.money}")        
       screen.addstr(1,0, "------------------------------------------------------------------------")
       screen.addstr(2,0, f"Page: {page}/{max_page}")
       screen.addstr(4,0, f"{name}")
-      screen.addstr(5,0, f'Price: TY$ {selling_price}')
+      screen.addstr(5,0, f'Price: TY$ {cost}')
       screen.addstr(6,0, f'Located in: {location}\tPart of {set} set')
+      screen.addstr(8,0, description)
 
       # Key help
 
@@ -399,8 +413,8 @@ class UserInterface:
         if page != 1 and page != max_page:
           return "[<-]Previous Page\t[->]Next Page"
 
-      screen.addstr(7,0, len(f'Located in: {location}\tPart of {set} set') * '-' + (7 * '-'))
-      screen.addstr(8,0, f"Sell [SPACE]\t{determine_nav_key()}\t[Q]uit")
+      screen.addstr(11,0, len(f'Located in: {location}\tPart of {set} set') * '-' + (7 * '-'))
+      screen.addstr(12,0, f"Sell [SPACE]\t{determine_nav_key()}\t[Q]uit")
 
       keypress_output = self.handle_keypress()
 
@@ -482,20 +496,37 @@ class UserInterface:
       cost = data['cost']
       location = data['location']
       set = data['set']
+      description = data['description']
       max_page = len(key_list)
       page = self.page + 1
 
-      logger.debug(f'Name: {name}, Cost: {cost}, Location: {location}, Set: {set}, Max Page: {max_page}')
+      logger.debug(f'Name: {name}, Cost: {cost}, Location: {location}, Set: {set}, Max Page: {max_page}, Description: {description}')
 
-      self.render(page, name, cost, location, set, max_page)
+      details = []
+
+      details.extend([page, name, cost, location, set, description, max_page])
+      # self.render(page, max_page, name, cost, location, set, description)
+
+      logger.debug(f'Details in list: {details}')
+
+      self.render(details)
     
     def handle_buying(self, name):
       # Handle all the outputs of buying properties
-      output_of_buy = datahandler.handle_all_sell(name)
+      output_of_buy = datahandler.handle_all_buy(name)
       self.render_dialog(output_of_buy)
       return None
 
-    def render(self, page: int, name: str, cost: int, location: str, set: str, max_page: str):
+    def render(self, details):
+
+      name = details[1]
+      cost = details[2]
+      location = details[3]
+      set = details[4]
+      description = details[5]
+      max_page = details[6]
+      page = details[0]
+
       screen.clear()
                     # y,x 
       screen.addstr(0,0, f"[Q]uit\t\tProperty Market\t\tYou have TY$ {self.money}")        
@@ -504,6 +535,7 @@ class UserInterface:
       screen.addstr(4,0, f"{name}")
       screen.addstr(5,0, f'Price: TY$ {cost}')
       screen.addstr(6,0, f'Located in: {location}\tPart of {set} set')
+      screen.addstr(8,0, description)
 
       # Key help
 
@@ -515,9 +547,8 @@ class UserInterface:
         if page != 1 and page != max_page:
           return "[<-]Previous Page\t[->]Next Page"
 
-      screen.addstr(7,0, len(f'Located in: {location}\tPart of {set} set') * '-' + (7 * '-'))
-      screen.addstr(8,0, f"Buy [SPACE]\t{determine_nav_key()}\t[Q]uit")
-
+      screen.addstr(11,0, len(f'Located in: {location}\tPart of {set} set') * '-' + (7 * '-'))
+      screen.addstr(12,0, f"Buy [SPACE]\t{determine_nav_key()}\t[Q]uit")
       keypress_output = self.handle_keypress()
 
       if keypress_output == "BUY":
@@ -580,75 +611,12 @@ class UserInterface:
       screen.clear()
       return None
 
-    def handle_buyinh(self, name):
-      # Handle all the outputs of buying properties
-      output_of_buy = datahandler.handle_all_sell(name)
-      self.render_dialog(output_of_buy)
-      return None
-    
-    def render(self, page: int, name: str, cost: int, location: str, set: str, max_page: str):
-      screen.clear()
-                  # y,x 
-      screen.addstr(0,0, f"[Q]uit\t\tProperty Market\t\tYou have TY$ {self.money}")        
-      screen.addstr(1,0, "---------------------------------")
-      screen.addstr(2,0, f"Page: {page}/{max_page}")
-      screen.addstr(4,0, f"{name}")
-      screen.addstr(5,0, f'TY$ {cost}')
-      screen.addstr(6,0, f'Located in: {location}\tPart of {set} set')
-
-      # Key help
-
-      def determine_nav_key():
-        if page == 1:
-          return "[->]Next Page"
-        if page == max_page:
-          return "[<-]Previous Page"
-        if page != 1 and page != max_page:
-          return "[<-]Previous Page\t[->]Next Page"
-
-      screen.addstr(7,0, len(f'Located in: {location}\tPart of {set} set') * '-' + (7 * '-'))
-      screen.addstr(8,0, f"Buy [SPACE]\t{determine_nav_key()}\t[Q]uit")
-
-      keypress_output = self.handle_keypress()
-      if keypress_output == "BUY":
-        self.handle_buyinh(name)
-
-    def handle_keypress(self):
-      # Keys
-      next_key = 261
-      previous_key = 260
-      buy_key = ' '
-      quit_key = 'q'
-
-      key_press = screen.get_wch()
-      logger.debug(f"Pressed {key_press}")
-
-      if key_press == next_key:
-        logger.debug(f"Next Page")
-        self.page = self.page + 1
-        self.data_gatherer()
-      
-      if key_press == previous_key:
-        logger.debug(f"Previous Page")
-        if self.page != 0:
-          self.page = self.page - 1
-          self.data_gatherer()
-        else:
-          self.handle_keypress()
-      
-      if key_press == quit_key:
-        logger.debug(f"Quit Key")
-        UserInterface.Dashboard()
-      
-      if key_press == buy_key:
-        logger.debug(f"Buy Key")
-        return "BUY"
-
   class GameHelp:
     pass
 
   class BusinessIdentityManagement:
-    pass
+    name, empire_name = None, None
+
 
 
 def main():
@@ -658,3 +626,5 @@ def main():
 
 if __name__ == '__main__':
   main()
+
+  # Save Test

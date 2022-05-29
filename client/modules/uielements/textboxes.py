@@ -26,13 +26,13 @@ class TextBoxCore():
 
     # Remove the default parameter for the postion argument
 
-    positon_x = position[0]
-    positon_y = position[1]
+    position_x = position[0]
+    position_y = position[1]
 
-    self.screen.addstr(positon_y, positon_x, title+": "+"_"*max_chars)
+    self.screen.addstr(position_y, position_x, title+": "+"_"*max_chars)
 
     if button_prompts:
-      self.screen.addstr(position[1]+1, positon_x, "Backspace: Num7\tAccept: Num9\tQuit: Num3")
+      self.screen.addstr(position[1]+1, position_x, "Backspace: Num7\tAccept: Num9\tQuit: Num3")
 
     # Finding the TextArea start position
 

@@ -9,6 +9,7 @@
   - Change controls
 - Compile the code
 - Add a property data management function to easily add and remove properties
+- Code out the Business Management
 
 ## Less Urgent
 - Add the option to enable auto-reload which will allow the client to reload property data so that
