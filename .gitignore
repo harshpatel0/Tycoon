@@ -50,9 +50,9 @@ client/modules/helpers/__pycache__/convert_to_dictionary.cpython-39.pyc
 debugsave/converttodictionaryhelper.log
 server/property_data.py
 client/debug.dat
-.gitignore
 client/legit.dat
 tycoon_venv/
 main.log
 client/modules/uielements/__pycache__/toggles.cpython-39.pyc
 client/toggles.log
+Old/
