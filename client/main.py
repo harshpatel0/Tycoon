@@ -3,6 +3,7 @@ print("Loading Files")
 import curses
 from sys import exit
 import logging
+import json
 
 # from time import sleep
 
@@ -40,9 +41,10 @@ server_name = None
 
 # Game Settings
 # These don't work and soon they will be moved to another file
-dont_show_button_prompts = False
-auto_connect_to_server_ip = "example.com"
-disable_logging = False
+enable_button_tooltips = False
+enable_autoconnect = False
+auto_connect_to_server = "www.example.com"
+enable_logging = False
 
 # Debug Switches
 debug_skip_ip = True 
@@ -57,6 +59,11 @@ debug_ignore_settings_file = False # Unused
 debug_use_ip = "127.0.0.1:8000"
 debug_create_save_file_with_name = "Test"
 debug_create_save_file_with_empire_name = "Test"
+
+with open("settings.json", 'r') as settingsfile:
+  settings = json.load(settingsfile)
+
+# Set Variables
 
 
 # Global Functions
@@ -271,7 +278,7 @@ class UserInterface:
 
       # Renders other options
 
-      if not dont_show_button_prompts:
+      if not enable_button_tooltips:
         screen.addstr(9, 0, "[H]elp\t[E]dit Business Documents\t[Q]uit")
 
       screen.refresh()
