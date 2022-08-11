@@ -54,3 +54,5 @@ client/debug.dat
 client/legit.dat
 tycoon_venv/
 main.log
+client/modules/uielements/__pycache__/toggles.cpython-39.pyc
+client/toggles.log
