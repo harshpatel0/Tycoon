@@ -52,3 +52,5 @@ server/property_data.py
 client/debug.dat
 .gitignore
 client/legit.dat
+tycoon_venv/
+main.log
