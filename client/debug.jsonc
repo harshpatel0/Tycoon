@@ -1,0 +1,14 @@
+{
+  "switches": [
+    "debug_skip_new_save_file_message",
+    "debug_skip_name_when_creating_new_save_files",
+    "debug_skip_empire_name_when_creating_new_save_files",
+    "debug_ignore_settings_file",
+    "debug_enable_wip_features"
+  ],
+  
+  "settings": {
+    "debug_create_save_file_with_name": "Test",
+    "debug_create_save_file_with_empire_name": "Test"
+  }
+}
