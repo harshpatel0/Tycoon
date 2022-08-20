@@ -22,6 +22,8 @@ import modules.uielements.textboxes
 # # Import all UI elements
 # import modules.uielements
 
+import modules.datahandlers.settingshandler
+
 client_version = 0.01
 
 # requesthandler = modules.datahandlers.requesthandler.RequestHandler()
@@ -32,19 +34,15 @@ requesthandler = modules.datahandlers.requesthandler.RequestHandler()
 datahandler = modules.datahandlers.datahandler.DataHandler()
 usernamehandler = modules.datahandlers.usernamehandler.UsernameHandler()
 backendhandler = modules.datahandlers.backendhandler.DataHandler()
+settingshandler = modules.datahandlers.settingshandler.SettingsHandler()
 
 screen = curses.initscr()
+
+settings_ui = modules.datahandlers.settingshandler.SettingsUI(screen=screen, raw_settings=settingshandler.raw)
 
 # Server Data 
 server_version = None
 server_name = None
-
-# Game Settings
-# These don't work and soon they will be moved to another file
-enable_button_tooltips = False
-enable_autoconnect = False
-auto_connect_to_server = "www.example.com"
-enable_logging = False
 
 # Debug Switches
 debug_skip_ip = True 
@@ -53,7 +51,6 @@ debug_skip_name_when_creating_new_save_files = True
 debug_skip_empire_name_when_creating_new_save_files = True
 debug_enable_wip_features = True
 debug_ignore_settings_file = False # Unused
-
 
 # Debug Options
 debug_use_ip = "127.0.0.1:8000"
@@ -278,7 +275,7 @@ class UserInterface:
 
       # Renders other options
 
-      if not enable_button_tooltips:
+      if not settingshandler.enable_button_tooltips:
         screen.addstr(9, 0, "[H]elp\t[E]dit Business Documents\t[Q]uit")
 
       screen.refresh()
@@ -298,6 +295,10 @@ class UserInterface:
       if key_press == 'e':
         logger.info("Loading Business Identity Management")
         UserInterface.BusinessIdentityManagement()
+      if key_press == 's':
+        logger.info("Loading Settings Menu")
+        settings_ui()
+        settings_ui()
       if key_press == 'q':
         logger.info("Quitting app")
         logger.debug(f"Cryptography Handler in Dashboard: {backendhandler.cryptographyhandler}")

@@ -56,7 +56,7 @@ class SettingsHandler:
   
   enable_button_tooltips = None
 
-  def __init__(self, file_path) -> None:
+  def __init__(self, file_path="settings.json") -> None:
     self.file_path = file_path
 
     logger.debug("Attempting to load settings")
@@ -74,9 +74,9 @@ class SettingsHandler:
       self.generate_new_settings_file()
       self.load_settings()
 
-    self.set_settings(self.raw)
+    self.apply_config_from_file(self.raw)
   
-  def set_settings(self, settings):
+  def apply_config_from_file(self, settings):
     self.enable_logging = settings["enable_logging"]
     
     self.enable_autoconnect = settings["enable_autoconnect"]
@@ -88,6 +88,7 @@ class SettingsHandler:
     self.raw[setting] = new_value
   
   def save_file(self, raw_data, file_path):
+    logger.debug(f"Raw Data: {raw_data}\nFile Path: {file_path}")
     with open(file_path, 'w') as settings_file:
       json.dump(settings_file, raw_data)
   
@@ -98,18 +99,20 @@ class SettingsUI():
   # Data Gatherer Properties
   page = 0
 
-  def __init__(self, screen, raw_settings) -> None:
+  def __init__(self, screen, raw_settings = None) -> None:
     self.screen = screen
     self.raw_settings = raw_settings
+
+    self.data_gatherer()
   
   def data_gatherer(self):
     key_list = tuple(settings_layout.keys())
 
     try:
-      data = self.properties[key_list[self.page]]
+      data = self.raw_settings[key_list[self.page]]
     except IndexError:
       self.page = 0
-      data = self.properties[key_list[self.page]]
+      data = self.raw_settings[key_list[self.page]]
     
       logger.debug(f"Settings Manager: Loaded Settings Layout data {data}")
     

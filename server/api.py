@@ -1,6 +1,6 @@
 import os
 
-class API():
+class API:
 
   name = ""
   properties = {}

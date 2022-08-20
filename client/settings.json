@@ -1,9 +1,0 @@
-{
-  "enable_logging": false,
-
-  "enable_autoconnect": false,
-  "auto_connect_to_server": "www.example.com",
-
-  "enable_button_tooltips": true,
-  "enable_user_profile_switcher": false
-}
