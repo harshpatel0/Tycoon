@@ -1,6 +1,5 @@
 /src/__pycache__
 /server/cloudsaves/
-/src/__pycache__
 /src/key
 /server/__pycache__
 server/__pycache__/gameserver.cpython-39.pyc
@@ -56,3 +55,6 @@ main.log
 client/modules/uielements/__pycache__/toggles.cpython-39.pyc
 client/toggles.log
 Old/
+.vscode/
+.github/
+.idea/
