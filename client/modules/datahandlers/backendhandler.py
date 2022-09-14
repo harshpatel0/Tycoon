@@ -1,6 +1,5 @@
 import cryptography
 from cryptography.fernet import Fernet
-
 from modules.helpers.convert_to_dictionary import convert_to_dictionary
 from . import requesthandler
 import logging
