@@ -58,3 +58,10 @@ Old/
 .vscode/
 .github/
 .idea/
+server/modules/
+.gitignore
+client/modules/datahandlers/__pycache__/
+client/modules/helpers/client/__pycache__/
+client/modules/__pycache__/__init__.cpython-39.pyc
+.idea/inspectionProfiles/profiles_settings.xml
+client/mainserver.log
