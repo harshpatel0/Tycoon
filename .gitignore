@@ -66,3 +66,5 @@ client/modules/__pycache__/__init__.cpython-39.pyc
 client/mainserver.log
 .gitignore
 server/modules/__pycache__/
+server/server.log
+.gitignore

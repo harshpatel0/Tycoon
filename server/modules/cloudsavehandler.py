@@ -26,7 +26,7 @@ class CloudsaveHandler():
     
   def update_savefile(self, data, username):
     data = data.encode('utf-8')
-    method_output = self.delete_savefile()
+    method_output = self.delete_savefile(username=username)
     if method_output == "NOTFOUND":
       return "NOTFOUND"
     with open(f'{self.cloudsave_path}/{username}.sav', 'wb') as savefile:

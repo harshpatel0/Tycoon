@@ -1,0 +1,5 @@
+flask
+cryptography
+os
+windows-curses
+time
