@@ -1,4 +1,5 @@
 import curses
+import re
 from sys import exit
 import logging
 import json
@@ -10,6 +11,9 @@ import modules.datahandlers.settingshandler
 import modules.uielements.textboxes
 
 from modules.helpers.client import connections
+
+# User Interface Imports
+import modules.userinterfaces.businessidentitymanagement
 
 # from time import sleep
 
@@ -472,13 +476,13 @@ class UserInterface:
         pass
 
     class BusinessIdentityManagement:
-        name, empire_name = None, None
+        # Business Identity Management requires the datahandler, the requesthandler and the screen
+        businessidentitymanagementui = modules.userinterfaces.businessidentitymanagement.BusinessIdentityManagement(datahandler=datahandler, requesthandler=requesthandler, screen=screen)
 
 
 def main():
-    main = Main()
+    """This may be used to add additional initialization data"""
+    Main()
 
 if __name__ == '__main__':
     main()
-
-    # Save Test
