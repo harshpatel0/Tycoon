@@ -117,6 +117,6 @@ class RequestHandler:
     return request.text
     
   def get_server_version(self):
-    request = self.query_data('api/server/server-version')
+    request = self.query_data('api/server/version')
     if request.text == "NO_CONNECTION": return "NO_CONNECTION"
     return float(request.text)
