@@ -75,6 +75,15 @@ class Main:
 
         connector.connect_to_server()
         connector.retrieve_server_data()
+
+        usernamehandler.get_username()
+        logger.debug(f"""
+        Datahandlers after successful connections
+        DataHandler = {datahandler.save_data}
+        BackendHandler = {backendhandler.save_data}
+        RequestHandler = {requesthandler.data}
+        UsernameHandler = {usernamehandler.username}
+        """)
         UserInterface()
 
 
@@ -100,6 +109,7 @@ class UserInterface:
         # Remember the coords are y, x
 
         def render(self):
+            logger.debug(f"Rendering Data in dashboard,\n\tName: {self.name}, Empire Name {self.empire_name}, Money {self.money} Property Count {self.property_count}")
             screen.clear()
             screen.addstr(0, 0, f"{self.empire_name} Dashboard")
             screen.addstr(1, 0, f"Welcome back {self.name}")
@@ -143,7 +153,7 @@ class UserInterface:
                 UserInterface.GameHelp()
             if key_press == 'e':
                 logger.info("Loading Business Identity Management")
-                UserInterface.BusinessIdentityManagement()
+                UserInterface.BusinessIdentityManagement(datahandler=datahandler, requesthandler=requesthandler, cryptographyhandler=backendhandler.cryptographyhandler, screen=screen)
             if key_press == 's':
                 logger.info("Loading Settings Menu")
                 logger.warn("The settings menu does not exist")
@@ -476,8 +486,21 @@ class UserInterface:
         pass
 
     class BusinessIdentityManagement:
-        # Business Identity Management requires the datahandler, the requesthandler and the screen
-        businessidentitymanagementui = modules.userinterfaces.businessidentitymanagement.BusinessIdentityManagement(datahandler=datahandler, requesthandler=requesthandler, screen=screen)
+        def __init__(self, datahandler, requesthandler, cryptographyhandler, screen) -> None:
+            self.datahandler = datahandler
+            self.requesthandler = requesthandler
+            self.cryptographyhandler = cryptographyhandler
+            self.screen = screen
+            self.load_external_ui()
+        
+        def load_external_ui(self):
+            # Business Identity Management requires the datahandler (requiring cryptographyhandler), the requesthandler and the screen
+            logger.debug("Loading businessidentitymanagementui")
+            modules.userinterfaces.businessidentitymanagement.BusinessIdentityManagement(
+                datahandler=self.datahandler, 
+                requesthandler=self.requesthandler,
+                cryptographyhandler=self.cryptographyhandler,
+                screen=self.screen)
 
 
 def main():
