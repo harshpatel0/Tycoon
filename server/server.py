@@ -4,6 +4,7 @@ import modules.cloudsavehandler
 import modules.basicshandler
 import property_data
 import logging
+import json
 
 logging.basicConfig(filename="server.log", format='%(asctime)s %(message)s', filemode="w")
 logger = logging.getLogger()
@@ -17,8 +18,12 @@ keyhandler = modules.keyhandler.Keys()
 key = keyhandler.get_key()
 property_data = property_data.property_data
 
+def load_properties():
+  with open('property_data.json', 'r') as propertyfile:
+    return json.load(propertyfile)
+
 cloudsavehandler = modules.cloudsavehandler.CloudsaveHandler()
-basicshandler = modules.basicshandler.BasicsHandler(name="businessapi", version="0.01", key=key, properties=property_data)
+basicshandler = modules.basicshandler.BasicsHandler(name="businessapi", version="0.01", key=key, properties=load_properties())
 
 # The server is supposed to return a session ID to disallow simultaneous connections, this change should be reflected
 # on the client side and the proper calls are to be made

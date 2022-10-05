@@ -17,6 +17,8 @@ requesthandler = requesthandler.RequestHandler()
 # (now backendhandler) module. The DataHandler (now backendhandler) module 
 # deals with the backend. Please do remember that before creating useless functions
 
+STARTING_MONEY = 10000
+
 class DataHandler:
 
   save_data = None
@@ -100,7 +102,6 @@ class DataHandler:
       encoded_request = request_to_server.encode()
       logger.debug(f"Encoded Save File: {encoded_request}")
 
-
       if self.decrypt_encrypted_save(encoded_request) == "INCORRECT KEY":
         return "INCORRECT KEY"
       return self.save_data
@@ -116,14 +117,16 @@ class DataHandler:
   
   def generate_save_file(self, name, empire_name):
 
-    starting_cash = 10000
+    logger.debug(f"Got request to generate a save file with the name {name} and the empire name {empire_name}")
 
     save_file = {
       "name": name,
       "empire-name": empire_name,
-      "money": starting_cash,
+      "money": STARTING_MONEY,
       "properties": []
     }
 
+    logger.debug(f"Generated save file {save_file}")
     self.save_data = save_file
+    logger.debug(f"Requested to save newly generated save file")
     self.upload_savefile(self.encrypt_save_file())

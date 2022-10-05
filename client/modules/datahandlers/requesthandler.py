@@ -50,7 +50,7 @@ class RequestHandler:
 
     headers = {"username": self.username}
 
-    response = requests.request('GET', f'{self.server_url}/api/cloudsaves/', headers=headers)
+    response = requests.request('GET', f'{self.server_url}/api/cloudsaves', headers=headers)
 
     if response.status_code == 404: return "NOT_EXISTS"
     response = response.text.replace("\"", '')
@@ -79,7 +79,7 @@ class RequestHandler:
     }
 
     logger.debug(f"Headers sent to the server: {headers}")
-    response = requests.request("PUT", f'{self.server_url}/api/cloudsaves/', headers=headers)
+    response = requests.request("PUT", f'{self.server_url}/api/cloudsaves', headers=headers)
     return None
 
   def update_cloudsaves(self):
@@ -88,7 +88,7 @@ class RequestHandler:
     "data": self.data
     }
     try:
-      response = requests.request("PATCH", f'{self.server_url}/api/cloudsaves/', headers=headers)
+      response = requests.request("PATCH", f'{self.server_url}/api/cloudsaves', headers=headers)
       if response.status_code == 404:
         return "NO_SAVE"
     except Exception:
