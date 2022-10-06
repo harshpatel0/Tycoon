@@ -1,6 +1,8 @@
+print("Loading Core Modules")
 import curses
 from sys import exit
 import logging
+print("Initializing DataHandlers")
 import modules.datahandlers.backendhandler
 import modules.datahandlers.datahandler
 import modules.datahandlers.requesthandler
@@ -8,28 +10,32 @@ import modules.datahandlers.usernamehandler
 import modules.datahandlers.settingshandler
 import modules.uielements.textboxes
 
+print("Loading Connections Module")
 from modules.helpers.client import connections
 
 # User Interface Imports
+print("Loading User Interfaces")
 import modules.userinterfaces.businessidentitymanagement
 import modules.userinterfaces.propertyportfolio
 import modules.userinterfaces.propertymarket
 
-# from time import sleep
-
+print("Initializing Logger")
 logging.basicConfig(filename="main.log", format="%(asctime)s %(message)s", filemode="w")
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
 client_version = 0.01
 
+print("Setting up Datahandlers")
 requesthandler = modules.datahandlers.requesthandler.RequestHandler()
 datahandler = modules.datahandlers.datahandler.DataHandler()
 usernamehandler = modules.datahandlers.usernamehandler.UsernameHandler()
 backendhandler = modules.datahandlers.backendhandler.DataHandler()
 # settingshandler = modules.datahandlers.settingshandler.SettingsHandler()
 
+print("Loading screen")
 screen = curses.initscr()
+print("Done loading")
 
 connector = connections.Connections(
                         requesthandler=requesthandler,
