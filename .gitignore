@@ -69,3 +69,5 @@ server/modules/__pycache__/
 server/server.log
 .gitignore
 client/modules/userinterfaces/__pycache__/
+client/playgroundmain.py
+client/playground.py
