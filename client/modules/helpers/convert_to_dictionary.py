@@ -6,7 +6,7 @@ import json
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
-def convert_to_dictionary(data, name_of_data = None):
+def convert_to_dictionary(data, name_of_data = "Unspecified"):
   # name_of_data is used for logging
   logger.debug(f"Inital data before converting to dictionary: {data}, Name of data: {name_of_data}")
     

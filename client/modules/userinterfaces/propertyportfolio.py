@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger()
+
 class PropertyPortfolio:
 
         page = 0
@@ -19,38 +22,39 @@ class PropertyPortfolio:
             self.data_gatherer()
 
         def render_dialog(self, message):
-            screen.clear()
+            self.screen.clear()
             # y,x
-            screen.addstr(0, 0, f"[Q]uit\t\tAlert")
-            screen.addstr(1, 0, "---------------------------------")
+            self.screen.addstr(0, 0, f"[Q]uit\t\tAlert")
+            self.screen.addstr(1, 0, "---------------------------------")
 
             if message == "NO PROPERTIES":
-                screen.addstr(2, 0, "You don't own any properties")
-                screen.addstr(3, 0,
+                self.screen.addstr(2, 0, "You don't own any properties")
+                self.screen.addstr(3, 0,
                               "Visit the property market to buy properties, if you think this is an error report the problem")
-                screen.addstr(4, 0, "Visit the report a problem guide on the website before reporting a problem")
-                screen.addstr(5, 0, "Error Code: NO PROPERTIES")
+                self.screen.addstr(4, 0, "Visit the report a problem guide on the website before reporting a problem")
+                self.screen.addstr(5, 0, "Error Code: NO PROPERTIES")
             if message == "NOT OWNED":
-                screen.addstr(2, 0, "You don't own this property")
-                screen.addstr(3, 0, "It seems like you don't own this property")
-                screen.addstr(4, 0, "This is definately an issue and should be reported")
-                screen.addstr(5, 0, "Error Code: NOT OWNED")
+                self.screen.addstr(2, 0, "You don't own this property")
+                self.screen.addstr(3, 0, "It seems like you don't own this property")
+                self.screen.addstr(4, 0, "This is definately an issue and should be reported")
+                self.screen.addstr(5, 0, "Error Code: NOT OWNED")
             else:
-                screen.addstr(2, 0, "Successfully sold")
-                screen.addstr(3, 0, f"This property has been sold, you now have TY$ {datahandler.money}")
-                self.money = datahandler.money
+                self.screen.addstr(2, 0, "Successfully sold")
+                self.screen.addstr(3, 0, f"This property has been sold, you now have TY$ {self.datahandler.money}")
+                self.money = self.datahandler.money
 
-            screen.addstr(5, 0, "Press ANY KEY to go back to the dashboard")
-            screen.refresh()
+            self.screen.addstr(5, 0, "Press ANY KEY to go back to the dashboard")
+            self.screen.refresh()
 
-            screen.get_wch()
-            screen.clear()
+            self.screen.get_wch()
+            self.screen.clear()
             return None
 
         def data_gatherer(self):
+            non_existant_property = False
             if self.property_count == 0:
                 self.render_dialog("NO PROPERTIES")
-                UserInterface.Dashboard()
+                return None
 
             value_pairs = self.properties
 
@@ -60,15 +64,26 @@ class PropertyPortfolio:
             except IndexError:
                 self.page = self.page - 1
                 property_info_for_property = self.property_data[value_pairs[self.page]]
+            except KeyError:
+                non_existant_property = True
+                property_info_for_property = "Can't be provided right now, will be fixed later"
+                logger.critical("Property that was not on the property list is in user's inventory, setting non_existant_property flag to true")
 
             logger.debug(
                 f'Property Information for the Property {self.page} of owned properties {property_info_for_property}')
 
             name = value_pairs[self.page]
-            location = property_info_for_property['location']
-            cost = property_info_for_property['cost']
-            set = property_info_for_property['set']
-            description = property_info_for_property['description']
+
+            if not non_existant_property:
+                location = property_info_for_property['location']
+                cost = property_info_for_property['cost']
+                set = property_info_for_property['set']
+                description = property_info_for_property['description']
+            else:
+                location = "Unknown"
+                cost = 0
+                set = "Non Existant Set"
+                description = "This property is not listed anymore\nIt can be sold but you will not get your money back"
 
             page = self.page + 1
             max_page = self.property_count
@@ -85,7 +100,7 @@ class PropertyPortfolio:
 
         def handle_selling(self, name):
             # Handle all the outputs of buying properties
-            output_of_sell = datahandler.handle_all_sell(name)
+            output_of_sell = self.datahandler.handle_all_sell(name)
             self.render_dialog(output_of_sell)
             return None
 
@@ -99,15 +114,15 @@ class PropertyPortfolio:
             max_page = details[6]
             page = details[7]
 
-            screen.clear()
+            self.screen.clear()
             # y,x
-            screen.addstr(0, 0, f"[Q]uit\t\tProperty Market\t\tYou have TY$ {self.money}")
-            screen.addstr(1, 0, "------------------------------------------------------------------------")
-            screen.addstr(2, 0, f"Page: {page}/{max_page}")
-            screen.addstr(4, 0, f"{name}")
-            screen.addstr(5, 0, f'Price: TY$ {cost}')
-            screen.addstr(6, 0, f'Located in: {location}\tPart of {set} set')
-            screen.addstr(8, 0, description)
+            self.screen.addstr(0, 0, f"[Q]uit\t\tProperty Market\t\tYou have TY$ {self.money}")
+            self.screen.addstr(1, 0, "------------------------------------------------------------------------")
+            self.screen.addstr(2, 0, f"Page: {page}/{max_page}")
+            self.screen.addstr(4, 0, f"{name}")
+            self.screen.addstr(5, 0, f'Price: TY$ {cost}')
+            self.screen.addstr(6, 0, f'Located in: {location}\tPart of {set} set')
+            self.screen.addstr(8, 0, description)
 
             # Key help
 
@@ -119,8 +134,8 @@ class PropertyPortfolio:
                 if page != 1 and page != max_page:
                     return "[<-]Previous Page\t[->]Next Page"
 
-            screen.addstr(11, 0, len(f'Located in: {location}\tPart of {set} set') * '-' + (7 * '-'))
-            screen.addstr(12, 0, f"Sell [SPACE]\t{determine_nav_key()}\t[Q]uit")
+            self.screen.addstr(11, 0, len(f'Located in: {location}\tPart of {set} set') * '-' + (7 * '-'))
+            self.screen.addstr(12, 0, f"Sell [SPACE]\t{determine_nav_key()}\t[Q]uit")
 
             keypress_output = self.handle_keypress()
 
@@ -134,7 +149,7 @@ class PropertyPortfolio:
             action_key = ' '
             quit_key = 'q'
 
-            key_press = screen.get_wch()
+            key_press = self.screen.get_wch()
             logger.debug(f"Pressed {key_press}")
 
             if key_press == next_key:
@@ -152,7 +167,7 @@ class PropertyPortfolio:
 
             if key_press == quit_key:
                 logger.debug(f"Quit Key")
-                UserInterface.Dashboard()
+                return None
 
             if key_press == action_key:
                 logger.debug(f"Sell Key")

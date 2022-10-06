@@ -68,4 +68,4 @@ client/mainserver.log
 server/modules/__pycache__/
 server/server.log
 .gitignore
-client/modules/userinterfaces/__pycache__/businessidentitymanagement.cpython-39.pyc
+client/modules/userinterfaces/__pycache__/

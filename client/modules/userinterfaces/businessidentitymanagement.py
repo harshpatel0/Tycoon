@@ -1,4 +1,7 @@
 from modules.uielements import textboxes
+import logging
+
+logger = logging.getLogger()
 
 class BusinessIdentityManagement:
   def __init__(self, datahandler, requesthandler, cryptographyhandler, screen) -> None:
