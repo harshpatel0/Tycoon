@@ -116,7 +116,7 @@ class PropertyPortfolio:
 
             self.screen.clear()
             # y,x
-            self.screen.addstr(0, 0, f"[Q]uit\t\tProperty Market\t\tYou have TY$ {self.money}")
+            self.screen.addstr(0, 0, f"[Q]uit\t\tProperty Portfolio\t\tYou have TY$ {self.money}")
             self.screen.addstr(1, 0, "------------------------------------------------------------------------")
             self.screen.addstr(2, 0, f"Page: {page}/{max_page}")
             self.screen.addstr(4, 0, f"{name}")
