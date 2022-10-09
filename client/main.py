@@ -46,7 +46,7 @@ connector = connections.Connections(
 # settings_ui = modules.datahandlers.settingshandler.SettingsUI(screen=screen, raw_settings=settingshandler.raw)
 
 # Server Data 
-server_version = None
+client_version = None
 server_name = None
 
 def quit_app():
@@ -183,6 +183,18 @@ class UserInterface:
 
     class GameHelp:
         pass
+
+    class SettingsMenu:
+        def __init__(self, settingshandler, usernamehandler, server_name, client_version) -> None:
+            self.settingshandler = settingshandler
+            self.usernamehandler = usernamehandler
+            self.server_name = server_name
+            self.client_version = client_version
+
+            self.load_external_ui()
+        
+        def load_external_ui():
+            pass
 
     class BusinessIdentityManagement:
         def __init__(self, datahandler, requesthandler, cryptographyhandler, screen) -> None:

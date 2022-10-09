@@ -1,0 +1,13 @@
+435:
+  Group: "Accounts"
+  Name: "Wrong Password"
+  Server Error Code: "WRONGPASSWORD"
+  Description: "The user has entered a wrong password and the authorisation has failed"
+
+436:
+  Group: "Accounts"
+  Name: "Account Already Exists"
+  Server Error Code: "ALREADYEXISTS"
+  Description: "The account the user is trying to create already exists and therefore it cannot be created"
+
+
