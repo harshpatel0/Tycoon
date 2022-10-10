@@ -71,21 +71,21 @@ class Connections:
 
     def connect_to_server(self):
         if not self.debug_skip_ip:
-            ipaddress_textbox = modules.uielements.textboxes.AddressTextBox(screen=self.screen)
+            serveraddress_textbox = modules.uielements.textboxes.AddressTextBox(screen=self.screen)
 
-            ipaddress = ipaddress_textbox.create_textbox("Server Address", (1, 1), 19)
+            serveraddress = serveraddress_textbox.create_textbox("Server Address", (1, 1), 32)
 
             self.screen.refresh()
-            if ipaddress == "QUIT":
+            if serveraddress == "QUIT":
                 quit()
         else:
-            ipaddress = self.debug_use_ip
+            serveraddress = self.debug_use_ip
 
         self.screen.clear()
-        self.screen.addstr(1, 2, f"Connecting to {ipaddress}")
+        self.screen.addstr(1, 2, f"Connecting to {serveraddress}")
         self.screen.refresh()
 
-        self.requesthandler.server_url = f"http://{ipaddress}"
+        self.requesthandler.server_url = f"http://{serveraddress}"
         status = self.requesthandler.ping()
 
         if status != "NO_CONNECTION":
@@ -94,7 +94,7 @@ class Connections:
         else:
             self.screen.clear()
 
-            self.screen.addstr(1, 2, f"Couldn't connect to {ipaddress}")
+            self.screen.addstr(1, 2, f"Couldn't connect to {serveraddress}")
             self.screen.addstr(2, 4, "A connection to a server is needed to play")
             self.screen.addstr(3, 4, "[R]etry, Any other key to exit")
 
