@@ -2,148 +2,50 @@ import json
 import logging
 
 logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
-
-settings_layout = {
-  "enable_logging": {
-    "name": "Enable Logging",
-    "description": "Allows the client to log unsensitive information\nInformation such as keys or user data won't be recorded",
-    "category": "Debug",
-    "type": "boolean"},
-
-  "enable_autoconnect": {
-    "name": "Enable Autoconnect",
-    "description": "Automatically connects to a specific server address",
-    "category": "Connections",
-    "type": "boolean"},
-
-  "auto_connect_to_server": {
-    "name": "Auto Connect to Server Address",
-    "description": "What server address the client will automatically try to connect to",
-    "category": "Connections",
-    "type": "string"},
-
-  "enable_button_tooltips": {
-    "name": "Enable Button Tooltips/Prompts",
-    "description": "Shows what buttons should be pressed in each menu, added due to button mapping inconsistencies",
-    "category": "User Experiences / User Interface",
-    "type": "boolean"},
-
-  "enable_experimental_settings": {
-    "name": "Enable Experimental Settings",
-    "description": "Enables features that are still being worked on",
-    "category": "Debug",
-    "type": "boolean"}
-}
-
-defaults = {
-  "enable_logging": False,
-  "enable_autoconnect": False,
-  "auto_connect_to_server": "",
-  "enable_button_tooltips": True,
-  "enable_experimental_settings": False
-}
 
 class SettingsHandler:
-
-  raw = None
-  file_path = None
-
-  enable_logging = None
-  
-  enable_autoconnect = None
-  auto_connect_to_server = None 
-  
-  enable_button_tooltips = None
-
-  def __init__(self, file_path="settings.json") -> None:
-    self.file_path = file_path
-
-    logger.debug("Attempting to load settings")
-    self.load_settings(file_path)
-
-  def generate_new_settings_file(self):
-    self.save_file(defaults, self.file_path) 
-
-  def load_settings(self, file_path):
-    try:
-      with open(file_path, 'r') as settings_file:
-        self.raw = json.load(settings_file)
-    except FileNotFoundError:
-      logger.debug("Handled Exception: FileNotFoundError, generating new settings file and retrying load")
-      self.generate_new_settings_file()
-      self.load_settings()
-
-    self.apply_config_from_file(self.raw)
-  
-  def apply_config_from_file(self, settings):
-    self.enable_logging = settings["enable_logging"]
+  def load_settings(self, file_path:str = 'settings.json'):
+    with open(f'{file_path}', 'r') as settingsfile:
+      logger.info(f"Loading settings file in {file_path}")
+      self.raw_settings = json.load(settingsfile)
+      logger.debug(f"Loaded setting data {self.raw_settings}")
     
-    self.enable_autoconnect = settings["enable_autoconnect"]
-    self.auto_connect_to_server = settings["auto_connect_to_server"]
-
-    self.enable_button_tooltips = settings['enable_button_tooltips']
-
-  def change_settings(self, setting, new_value):
-    self.raw[setting] = new_value
-  
-  def save_file(self, raw_data, file_path):
-    logger.debug(f"Raw Data: {raw_data}\nFile Path: {file_path}")
-    with open(file_path, 'w') as settings_file:
-      json.dump(settings_file, raw_data)
-  
-class SettingsUI():
-  screen = None
-  raw_settings = None
-
-  # Data Gatherer Properties
-  page = 0
-
-  def __init__(self, screen, raw_settings = None) -> None:
-    self.screen = screen
-    self.raw_settings = raw_settings
-
-    self.data_gatherer()
-  
-  def data_gatherer(self):
-    key_list = tuple(settings_layout.keys())
-
-    try:
-      data = self.raw_settings[key_list[self.page]]
-    except IndexError:
-      self.page = 0
-      data = self.raw_settings[key_list[self.page]]
+  def parse_settings(self):
+    logger.info("Parsing raw setting data")
+    # Parse all setting subgroups
+    connection_settings = self.raw_settings['connection_settings']
+    userinterface_settings = self.raw_settings['userinterface_settings']
+    keybindings = self.raw_settings['keybindings']
+    flags = self.raw_settings['flags'] # This setting subgroup does not need to be parsed further
     
-      logger.debug(f"Settings Manager: Loaded Settings Layout data {data}")
-    
-    # Assemble Data into List
-    page = self.page
-    name = data["name"]
-    description = data["description"]
-    category = data["category"]
-    type = data["type"]
+    logger.debug(f"""
+    Parsed Setting Subgroups
+    -------------------------
+    Connection Settings:      {connection_settings}
+    User Interface Settings:  {userinterface_settings}
+    Keybindings:              {keybindings}
+    Flags:                    {flags
+    }""")
 
-    current_value = self.raw_settings[key_list[self.page]]
+    # Parse Connection Settings
+    self.enable_autoconnect = connection_settings['enable_autoconnect']
+    self.autoconnect_to_server_address = connection_settings['autoconnect_to_server_address']
 
-    details = (page, name, description, category, current_value)
-    self.render(type, details=details)
+    # Parse Userinterface Settings
+    self.show_button_prompts = userinterface_settings['show_button_prompts']
 
-  def render(self, type, details):
-    # Unpack List
-    page = details[0]
-    name = details[1]
-    description = details[2]
-    category = details[3]
-    current_value = details[4]
+    # Parse Keybindings
+    self.action_key = keybindings['action_key']
+    self.quit_userinterface_key = keybindings['quit_userinterface']
+    self.backspace_key = keybindings['backspace']
+    self.accept_key = keybindings['accept_key']
+    self.quit_key = keybindings['quit_key']
 
-
-    self.screen.clear()
-                      # y, x
-    self.screen.addstr(0,0, "Settings Manager")
-    self.screen.addstr(1, 0, f"{page}/{len(settings_layout)}")
-    self.screen.addstr(2, 0, f"{category} -> {name}")
-    self.screen.addstr(3, 1, f"{description}")
-
-    self.screen.addstr(5, 0, f"Currently set to {current_value}")
-    
-    # Here is where the setting changer will be located
+  def change_setting_value(self, setting, new_value):
+    """
+    This method presumes that all the necessary checks have been done and that the data
+    is good to be saved. Please ensure that checks are implemented correctly to avoid weird
+    edge cases
+    """
+    logger.debug(f"Changing {setting} from {self.raw_settings[setting]} to {new_value}")
+    self.raw_settings[setting] = new_value

@@ -1,0 +1,20 @@
+{
+  "connection_settings": {
+    "enable_autoconnect": false,
+    "autoconnect_to_server_address": "127.0.0.1:5000"
+  },
+  
+  "userinterface": {
+    "show_button_prompts": true
+  },
+
+  "keybindings": {
+    "action_key": " ",
+    "quit_userinterface": "q",
+    "backspace": 449,
+    "accept_key": 451,
+    "quit_key": 457
+  },
+
+  "flags": ["enable_experimental_settings"]
+}
