@@ -71,3 +71,4 @@ server/server.log
 client/modules/userinterfaces/__pycache__/
 client/playgroundmain.py
 client/playground.py
+client/modules/__pycache__/
