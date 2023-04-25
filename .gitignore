@@ -75,3 +75,6 @@ client/modules/__pycache__/
 client/modules/helpers/__pycache__/
 .gitignore
 .gitignore
+.tycoon_venv
+.venv
+cleint\venv
