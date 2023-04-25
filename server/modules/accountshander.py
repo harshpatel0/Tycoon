@@ -2,21 +2,21 @@ import hashlib
 import json
 
 class AccountsHandler:
-    self.accounts = {}
+    accounts = {}
 
     def __init__(self, accounts_file_path):
         self.accounts_file_path = accounts_file_path
         self.load_accounts()
 
-    def load_accounts():
+    def load_accounts(self):
         with open(f'{self.accounts_file_path}' ,'r') as accountsfile:
             self.accounts = json.load(accountsfile)
 
-    def save_accounts():
+    def save_accounts(self):
         with open(f'{self.accounts_file_path}', 'w') as accountsfile:
-            json.dump(self.accounts}
+            json.dump(self.accounts)
 
-    def add_account(username, gameusername, password):
+    def add_account(self, username, gameusername, password):
         # Check if the account already exists
 
         if username in self.accounts:
@@ -30,7 +30,7 @@ class AccountsHandler:
                 }
         self.accounts.update(account_details)
     
-    def authorise_login(username, password):
+    def authorise_login(self, username, password):
         """
         The password received must be hashed
         """
