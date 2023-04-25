@@ -50,7 +50,8 @@ class Keys():
 class KeyDashboard(Keys):
   def __init__(self) -> None:
     super().__init__()
-    self.dashboard()
+    if __name__ == "__main__":
+      self.dashboard()
   
   def render_dashboard(self,screen):
 
@@ -130,6 +131,10 @@ class KeyDashboard(Keys):
       if key_pressed == 'r':
         self.reset_key_screen(screen)
     
-    quit()
+    if __name__ == "__main__":
+      quit()
+    else:
+      curses.endwin()
+      return None
 if __name__ == "__main__":
   KeyDashboard()
