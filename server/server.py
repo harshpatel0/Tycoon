@@ -2,13 +2,15 @@ from flask import Flask, jsonify, request, Response
 import modules.keyhandler
 import modules.cloudsavehandler
 import modules.basicshandler
-import property_data
+import modules.console
 import logging
 import json
+import threading
+import time
 
 logging.basicConfig(filename="server.log", format='%(asctime)s %(message)s', filemode="w")
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 sessions = {}
 
@@ -16,14 +18,17 @@ app = Flask(__name__)
 
 keyhandler = modules.keyhandler.Keys()
 key = keyhandler.get_key()
-property_data = property_data.property_data
 
 def load_properties():
   with open('property_data.json', 'r') as propertyfile:
     return json.load(propertyfile)
 
 cloudsavehandler = modules.cloudsavehandler.CloudsaveHandler()
-basicshandler = modules.basicshandler.BasicsHandler(name="businessapi", version="0.01", key=key, properties=load_properties())
+basicshandler = modules.basicshandler.BasicsHandler(name="businessapi", version="0.01", key=key)
+propertyhandler = modules.basicshandler.PropertyHandler(properties=load_properties(), reload_seconds=12)
+keyhandlerui = modules.keyhandler.KeyDashboard()
+
+console = modules.console.Console(cloudsavehandler=cloudsavehandler, basicshandler=basicshandler, propertyhandler=propertyhandler, keyhandler=keyhandler, keyhandlerui=keyhandlerui, enable_console=True)
 
 # The server is supposed to return a session ID to disallow simultaneous connections, this change should be reflected
 # on the client side and the proper calls are to be made
@@ -55,8 +60,8 @@ def key():
 
 @app.route("/api/properties")
 def properties():
-  logger.info(f'Sending property data\n\t{basicshandler.properties}')
-  return jsonify(basicshandler.properties)
+  logger.info(f'Sending property data\n\t{propertyhandler.properties}')
+  return jsonify(propertyhandler.properties)
 
 # ===============================================================================================================
 """
@@ -126,6 +131,24 @@ def delete_cloudsave():
   return Response(status=200)
 
 # ===============================================================================================================
+#           Server Backend Code
+# ===============================================================================================================
+
+def propertyhandlertimeticker():
+  target = propertyhandler.reload_seconds
+  
+  while True:
+    time.sleep(1)
+    propertyhandler.ticks = propertyhandler.ticks + 1
+    if propertyhandler.ticks >= target:
+      propertyhandler.ticks = 0
+      propertyhandler.reload_properties()
+      logger.info("Reloaded properties successfully, recounting ticks")
+
+    logger.debug(f'Ticks: {propertyhandler.ticks}, Target: {target}')
+    logger.debug(f"Tick Elapsed\nCurrent counter for ticks is {propertyhandler.ticks}\nThe target is {target}\nDerived from {propertyhandler.reload_seconds}")
 
 if __name__ == "__main__":
+  threading.Thread(target=propertyhandlertimeticker).start()
+  threading.Thread(target=console.prompt).start()
   app.run()
