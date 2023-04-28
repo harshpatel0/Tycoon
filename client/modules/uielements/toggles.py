@@ -67,7 +67,7 @@ class ToggleBox:
     self.screen.addstr(position_y+1, position_x+1, f"Currently set to: ")
 
     if button_prompts:
-      self.screen.addstr(position_y+3, position_x, "Backspace: Num7\tAccept: Num9\tQuit: Num3")
+      self.screen.addstr(position_y+3, position_x, "Action: Space Key\tAccept: Num9\tQuit: Num3")
 
     # Calculate Toggle Area Position
 
