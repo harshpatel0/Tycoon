@@ -78,3 +78,8 @@ client/modules/helpers/__pycache__/
 .tycoon_venv
 .venv
 cleint\venv
+cloc-1.96.exe
+client/server.log
+dev/server.log
+client/modules/uielements/__pycache__/
+client/modules/uielements/__pycache__/
