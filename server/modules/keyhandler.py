@@ -110,6 +110,13 @@ class KeyDashboard(Keys):
     
   
   def dashboard(self):
+    if __name__ == '__main__':
+      print("This applet is running outside of a server, the files saved may not be in the correct directory and will be ignored by the server.\nYou are recommended to use the console of the server in order to run this applet.\nType 'continue' to continue running the applet")
+      if input() == 'continue':
+        pass
+      else:
+        quit()
+        
     screen = curses.initscr()
     curses.mousemask(curses.ALL_MOUSE_EVENTS | curses.REPORT_MOUSE_POSITION)
     curses.curs_set(0)
