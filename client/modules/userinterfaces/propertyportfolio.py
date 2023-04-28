@@ -51,12 +51,14 @@ class PropertyPortfolio:
             return None
 
         def data_gatherer(self):
+            # This code is a result of some heavy brainstorming
+            # or plain stupidity
             non_existant_property = False
             if self.property_count == 0:
                 self.render_dialog("NO PROPERTIES")
                 return None
 
-            value_pairs = self.properties
+            value_pairs = tuple(self.properties.keys())
 
             # Use the value pairs to get the property details from the property data
             try:
@@ -92,7 +94,6 @@ class PropertyPortfolio:
                 f'Name: {name}, Cost: {cost}, Location: {location}, Set: {set}, Max Page: {max_page}, Description: {description}')
 
             details = []
-
             details.extend([page, name, cost, location, set, description, max_page, page])
 
             self.render(details)
@@ -144,8 +145,8 @@ class PropertyPortfolio:
 
         def handle_keypress(self):
             # Keys
-            next_key = 261
-            previous_key = 260
+            next_key = '.'
+            previous_key = ','
             action_key = ' '
             quit_key = 'q'
 
