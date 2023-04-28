@@ -24,7 +24,7 @@ def load_properties():
     return json.load(propertyfile)
 
 cloudsavehandler = modules.cloudsavehandler.CloudsaveHandler()
-basicshandler = modules.basicshandler.BasicsHandler(name="businessapi", version="0.01", key=key, properties=load_properties())
+basicshandler = modules.basicshandler.BasicsHandler(name="businessapi", version="2a", key=key, properties=load_properties())
 accountshandler = modules.accountshandler.AccountsHandler(accounts_file_path = 'accounts.json')
 # The server is supposed to return a session ID to disallow simultaneous connections, this change should be reflected
 # on the client side and the proper calls are to be made
