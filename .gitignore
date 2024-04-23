@@ -3,7 +3,6 @@
 /src/key
 /server/__pycache__
 server/__pycache__/gameserver.cpython-39.pyc
-todo
 src/WMIC.exe
 src/WMICOOKR.dll
 src/WMIC.exe.mui
@@ -52,7 +51,6 @@ Old/
 .vscode/
 .github/
 .idea/
-.gitignore
 client/modules/datahandlers/__pycache__/
 client/modules/helpers/client/__pycache__/
 client/modules/__pycache__/__init__.cpython-39.pyc
@@ -61,11 +59,9 @@ client/mainserver.log
 .gitignore
 server/modules/__pycache__/
 server/server.log
-.gitignore
 client/modules/userinterfaces/__pycache__/
 client/modules/__pycache__/
 client/modules/helpers/__pycache__/
-.gitignore
 .tycoon_venv
 .venv
 cleint\venv
