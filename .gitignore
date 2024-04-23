@@ -14,7 +14,6 @@ src/dependencies/WMIC.exe.mui
 src/dependencies/WMICOOKR.dll
 uuid.dat
 src/__pycache__
-src/rewritten/
 username.dat
 server/key.dat
 server/key copy.dat
@@ -30,11 +29,6 @@ key.dat
 client/modules/uielements/__pycache__/textboxes.cpython-39.pyc
 server/runserver.cmd
 client/ui
-Tycoon Docs/.obsidian/app.json
-Tycoon Docs/.obsidian/appearance.json
-Tycoon Docs/.obsidian/core-plugins.json
-Tycoon Docs/.obsidian/hotkeys.json
-Tycoon Docs/.obsidian/workspace
 client/modules/datahandlers/__pycache__/backendhandler.cpython-39.pyc
 client/modules/datahandlers/__pycache__/datahandler.cpython-39.pyc
 client/modules/datahandlers/__pycache__/requesthandler.cpython-39.pyc
@@ -69,11 +63,8 @@ server/modules/__pycache__/
 server/server.log
 .gitignore
 client/modules/userinterfaces/__pycache__/
-client/playgroundmain.py
-client/playground.py
 client/modules/__pycache__/
 client/modules/helpers/__pycache__/
-.gitignore
 .gitignore
 .tycoon_venv
 .venv
