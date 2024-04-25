@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connections</title>
+    <link rel="stylesheet" href="static/style.css" />
+  </head>
+  <body>
+    <main id="main">
+      <section id="sidepanel">
+        <div id="error-message" class="error-message">
+          <h3>Unable to connect to the server</h3>
+          <button onclick="closeAlert()" class="close-alert">x</button>
+          <span>
+            Check if the server address has been typed in correctly, otherwise
+            the server you are trying to connect to may be offline.
+          </span>
+        </div>
+
+        <div class="section-content">
+          <h1 class="game-title">Tycoon</h1>
+          <h2 class="page-title">Server Connections</h2>
+
+          <br /><br />
+
+          <label for="ipaddress">Server Address</label>
+          <div>
+            <input
+              type="text"
+              name="ipaddress"
+              id="ipaddress"
+              placeholder="e.g., 192.168.0.1"
+            />
+          </div>
+
+          <br />
+
+          <p>
+            If the server uses another port other than the default, you can
+            specify that here
+          </p>
+
+          <br />
+
+          <label for="port">Server Port</label>
+          <input type="number" name="port" id="port" value="5000" />
+
+          <br /><br />
+
+          <button class="connect-button">Connect</button>
+        </div>
+      </section>
+
+      <aside>
+        <div class="hero-image"></div>
+      </aside>
+    </main>
+  </body>
+
+  <script defer src="static/mainpage.js"></script>
+  <script defer type="text/javascript" src="/eel.js"></script>
+</html>
