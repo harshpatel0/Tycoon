@@ -1,0 +1,8 @@
+[✅] Create a more advanced UUID Generator based on different factors different from each PC - The amount of characters in the list of installed programs - A quarter of the amount of cores on the PC then multiplied to the seed - The total number of the PIDs of every process in the system divided by the number of processes then divided
+by the total
+[✅] Remove offline mode
+[✅] Make the client now request the keys from the server
+[✅] Make generating and giving encryption keys the job of the server
+[✅] Make the app use the built in wmic.exe instead of the built in Windows ones
+[❌] Check any loaded usernames with the formats to ensure it is correct
+[❌] Rework all REST API calls to the server

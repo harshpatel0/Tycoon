@@ -1,0 +1,11 @@
+[✅] Remake Server (High Priority)
+[✅] Test and Debug Server using both Insomnia and the client
+[✅] Fix Client (High Priority)
+  Error was caused due to the VSCode Terminal Window not being big enough during debug
+[] Improve Playground (Add Dummy Data) (Medium Priority)
+[] Make a MessageBox UI Component
+  [] Port MessageBoxes to New UI Component
+[✅] Seperate all UserInterfaces in Main to seperate files, should be stored in modules\userinterfaces\
+[✅] Handle _curses.error: addwstr() returned ERR
+  This error is caused during text rendering when there is no screen space to render the data in the selected
+  location (outside the window's width/height)
